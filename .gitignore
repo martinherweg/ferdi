@@ -1,2 +1,4 @@
 node_modules
 yarn-error.log
+modlr.js
+src/moduleCreation.js
