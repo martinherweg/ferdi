@@ -4,10 +4,12 @@
   "license": "MIT",
   "preferGlobal": true,
   "bin": {
-    "modlr": "modlr.js"
+    "modlr": "index.js"
   },
   "dependencies": {
     "deepmerge": "^2.0.0",
+    "find-up": "^2.1.0",
+    "glob": "^7.1.2",
     "inquirer": "^3.3.0",
     "lodash": "^4.17.4",
     "mem-fs": "^1.1.3",
