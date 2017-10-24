@@ -3,66 +3,53 @@ const chalk = require('chalk');
 const findUp = require('find-up');
 const merge = require('deepmerge');
 
-const defaultConfig = require('./.modlrrc');
-const userConfigPath = findUp.sync(['.modlrrc.js', '.modlrrc', 'package.json']);
-const userConfig = require(userConfigPath) || {};
+const createModule = require('./createModule');
 
-if (!userConfig) {
+const defaultConfig = require('./.modlrrc');
+const userConfigPath = findUp.sync(['.modlrrc.js', '.modlrrc']);
+let userConfig = {};
+
+if (!userConfigPath) {
   console.warn(
-    chalk`{Module gets created with default Templates and Paths, please create a config file if you want to define your own.}`,
+    chalk`{bgRed Module gets created with default Templates and Paths, please create a config file if you want to define your own.}`,
   );
+} else {
+  userConfig = require(userConfigPath);
 }
 
 const config = merge(defaultConfig, userConfig);
-
 const modlr_fn = () => {
-  const { defaults } = config;
+  const { files, paths } = config;
+
+  const pathOptions = {};
+
+  Object.keys(paths.pathOptions).forEach(key => {
+    pathOptions[key] = {};
+    pathOptions[key].alias = key.charAt(0);
+    pathOptions[key].description =
+      'Modlr creates File at ' + paths.templateBase + key + '/';
+    pathOptions[key].group = chalk`{bgCyan Path Options}`;
+  });
+
   const modlr = yargs
-    .option('html', {
-      alias: ['template', 'view'],
-      group: chalk`{bgCyan Template}`,
-      default: defaults.html,
-      boolean: true,
-      describe: 'Modlr should create a Template File',
+    .command({
+      command: 'copyConfig',
+      handler() {
+        // console.log(process);
+      },
     })
-    .option('css', {
-      alias: ['style', 'scss'],
-      group: chalk`{bgCyan CSS}`,
-      default: defaults.css,
-      boolean: true,
-      describe: 'Modlr should create CSS / SCSS / SASS / Stylus / LESS File',
-    })
-    .option('js', {
-      alias: ['javascript', 'JS'],
-      group: chalk`{bgCyan JavaScript}`,
-      default: defaults.javascript,
-      boolean: true,
-      describe: 'Modlr should create JavaScript File',
-    })
-    .option('Vue', {
-      alias: 'vue',
-      group: chalk`{bgCyan Vue}`,
-      default: defaults.javascript,
-      boolean: true,
-      describe: 'Modlr should create Vue.js SFC',
-    })
-    .option('config', {
-      alias: 'fractal',
-      group: chalk`bgCyan Fractal Config`,
-      boolean: true,
-      describe: 'Modlr should create a Fractal Config File',
-    })
+    .options(files)
+    .options(pathOptions)
     .help().argv;
 
-  const options = {
-    html: modlr.html || modlr.template,
-    css: modlr.css || modlr.style || modlr.scss,
-    javascript: modlr.javascript || modlr.JS || modlr.js,
-    vue: modlr.vue || modlr.Vue,
-    fractal: modlr.config || modlr.fractal,
-  };
+  const trueOptions = Object.keys(modlr).reduce((r, e) => {
+    if (modlr[e]) r[e] = modlr[e];
+    return r;
+  }, {});
 
-  console.log(options);
+  console.log(trueOptions);
+
+  // createModule({ options: modlr, config });
 };
 
 module.exports = modlr_fn;
