@@ -3,6 +3,10 @@ const chalk = require('chalk');
 const path = require('path');
 const memFs = require('mem-fs');
 const editor = require('mem-fs-editor');
+const findUp = require('find-up');
+
+const pkgPath = findUp.sync('package.json') || '';
+const pkg = require(pkgPath) || {};
 
 const store = memFs.create();
 const fs = editor.create(store);
@@ -12,9 +16,23 @@ const fs = editor.create(store);
  * @param extension
  * @param config
  */
-const createModule = ({ extension, config }) => {
+const createModule = ({
+  name = 'module',
+  kind,
+  extension,
+  config,
+  pathOptions = null,
+}) => {
   const basePath = path.resolve(process.cwd());
-  console.log(`BasePath: ${basePath}`);
+  // get module data to write files
+  const moduleData = {
+    moduleName: 'name',
+    authors: pkg.authors,
+    projectName: pkg.name,
+    file: '',
+  };
+  const { files } = config;
+
   // function to copy a template file to a defined directory
   /**
    *
@@ -22,11 +40,34 @@ const createModule = ({ extension, config }) => {
    * @returns {*}
    */
   const copyTpl = ({ fileExtension }) => {
-    return fs.copyTpl(
-      path.resolve(config.paths.templateBase, glob.sync(`+(${fileExtension})`)),
-      `${template}`,
-      moduleData,
+    const templatePath = path.resolve(
+      basePath + '/' + config.paths.templateBase,
     );
+
+    let globRegex = `?(${kind}*)`;
+
+    if (fileExtension.match(/scss/g)) {
+      globRegex = `?(_${kind}*)`;
+    }
+
+    // get the template File
+    const templateFile = glob.sync(globRegex, {
+      cwd: templatePath,
+      realpath: true,
+    });
+
+    let destinationPath = config.paths.modulePath;
+    if (pathOptions) destinationPath = destinationPath + pathOptions.path;
+    destinationPath = path.join(destinationPath, name);
+
+    let filename = files[kind].name ? files[kind].name : path.basename(name);
+    filename = filename + '.' + fileExtension;
+
+    destinationPath = destinationPath + '/' + filename;
+
+    console.log(destinationPath);
+
+    // return fs.copyTpl(templateFile, `${destinationPath}`, moduleData);
   };
 
   if (typeof extension === Array) {
@@ -34,21 +75,38 @@ const createModule = ({ extension, config }) => {
   } else {
     copyTpl({ fileExtension: extension });
   }
-  console.log(`${filename}`);
+  // console.log(`Filename: ${filename}`);
 };
 
 /**
- * 
+ *
  * @param options
  * @param config
  */
 const moduleCreation = ({ options, config }) => {
-  const { files } = config;
-
+  const { files, paths } = config;
+  const { pathOptions } = paths;
   Object.keys(files).forEach(file => {
+    console.log(file);
+    let destinationPathOption;
     if (options[file]) {
+      console.log('File creation', file);
+      Object.keys(pathOptions).forEach(path => {
+        if (options[path]) {
+          destinationPathOption = {
+            key: path,
+            path: pathOptions[path],
+          };
+        }
+      });
       const module = files[file];
-      createModule({ extension: module.extension, config });
+      createModule({
+        name: options._[0],
+        kind: file,
+        extension: module.extension,
+        config,
+        pathOptions: destinationPathOption,
+      });
     }
   });
 };
