@@ -46,6 +46,7 @@ module.exports = {
     templateBase: 'tmpl/',
     modulePath: 'src/',
     pathOptions: {
+      // the first character of each key works as an alias for the path so you could use `-a` as an alias for atomic
       atomic: 'atomic/',
       modules: 'modules/',
     },
