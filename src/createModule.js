@@ -24,13 +24,6 @@ const createModule = ({
   pathOptions = null,
 }) => {
   const basePath = path.resolve(process.cwd());
-  // get module data to write files
-  const moduleData = {
-    moduleName: 'name',
-    authors: pkg.authors,
-    projectName: pkg.name,
-    file: '',
-  };
   const { files } = config;
 
   // function to copy a template file to a defined directory
@@ -60,14 +53,27 @@ const createModule = ({
     if (pathOptions) destinationPath = destinationPath + pathOptions.path;
     destinationPath = path.join(destinationPath, name);
 
-    let filename = files[kind].name ? files[kind].name : path.basename(name);
-    filename = filename + '.' + fileExtension;
+    let filename = files[kind].name
+      ? files[kind].name
+      : `${path.basename(name)}-${files[kind].postfix}`;
 
-    destinationPath = destinationPath + '/' + filename;
+    filename = `${filename}.${fileExtension}`;
 
-    console.log(destinationPath);
+    destinationPath = basePath + '/' + destinationPath + '/' + filename;
+    // get module data to write files
+    const moduleData = config.fileHeader || {};
+    moduleData.moduleName = path.basename(name);
+    moduleData.file = filename;
 
-    // return fs.copyTpl(templateFile, `${destinationPath}`, moduleData);
+    fs.copyTpl(
+      templateFile[0],
+      `${destinationPath.replace('//', '/')}`,
+      moduleData,
+    );
+
+    return fs.commit(done => {
+      return console.log(chalk`\n{green File ${destinationPath} was created}`);
+    });
   };
 
   if (typeof extension === Array) {
@@ -87,10 +93,8 @@ const moduleCreation = ({ options, config }) => {
   const { files, paths } = config;
   const { pathOptions } = paths;
   Object.keys(files).forEach(file => {
-    console.log(file);
     let destinationPathOption;
     if (options[file]) {
-      console.log('File creation', file);
       Object.keys(pathOptions).forEach(path => {
         if (options[path]) {
           destinationPathOption = {
