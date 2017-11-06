@@ -64,7 +64,9 @@ const createModule = ({
 
     let filename = files[kind].name
       ? files[kind].name
-      : `${path.basename(name)}-${files[kind].postfix}`;
+      : `${path.basename(name)}${files[kind].postfix
+          ? '-' + files[kind].postfix
+          : ''}`;
 
     filename = `${filename}.${fileExtension}`;
 
