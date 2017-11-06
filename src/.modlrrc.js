@@ -7,6 +7,10 @@ const defaults = {
 };
 
 module.exports = {
+  fileHeader: {
+    authors: 'AuthorName',
+    projectName: 'ProjectName',
+  },
   files: {
     template: {
       name: '',

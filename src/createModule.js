@@ -72,7 +72,9 @@ const createModule = ({
     );
 
     return fs.commit(done => {
-      return console.log(chalk`\n{green File ${destinationPath} was created}`);
+      return console.log(
+        chalk`\n{green File ${destinationPath.replace('//', '/')} was created}`,
+      );
     });
   };
 
