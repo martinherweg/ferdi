@@ -6,6 +6,7 @@
   "bin": {
     "modlr": "index.js"
   },
+  "repository": "https://github.com/martinherweg/modlr",
   "dependencies": {
     "deepmerge": "^2.0.0",
     "find-up": "^2.1.0",
