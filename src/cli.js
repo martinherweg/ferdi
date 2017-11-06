@@ -35,9 +35,19 @@ const MODLR_CONFIG_FILE = fs.existsSync(
   ? path.resolve(MODLR_ROOT, CONFIG_FILE_NAME)
   : '';
 
+const TEMPLATE_FOLDER_NAME = './src/templates';
+const TEMPLATE_FOLDER = fs.existsSync(
+  path.resolve(MODLR_ROOT, TEMPLATE_FOLDER_NAME),
+)
+  ? path.resolve(MODLR_ROOT, TEMPLATE_FOLDER_NAME)
+  : '';
+
 // check for a user Config going up from where the command was used and get it's path
-const userConfigPath = findUp.sync(['.modlrrc.js', '.modlrrc']);
-let userConfig = require(userConfigPath) || {};
+const userConfigPath = findUp.sync(['.modlrrc.js', '.modlrrc']) || '';
+let userConfig;
+if (userConfigPath) {
+  userConfig = require(userConfigPath);
+}
 
 // if a user config is available use it and if not use the default Config
 const config = userConfig !== undefined ? userConfig : defaultConfig;
@@ -61,6 +71,27 @@ const modlr_fn = () => {
   // CLI Interface with yargs
   const modlr = yargs
     .command({
+      command: ['new', '*'],
+      description: 'Create a new Module',
+      handler: argv => {
+        if (!config)
+          console.error(
+            'Please use `modlr init` to copy the config file to your project ',
+          );
+
+        const trueOptions = Object.keys(argv).reduce((r, e) => {
+          if (argv[e]) r[e] = argv[e];
+          return r;
+        }, {});
+
+        // use createModule function to create the new module.
+        createModule({
+          options: trueOptions,
+          config,
+        });
+      },
+    })
+    .command({
       command: 'init',
       description: 'Copy the Config File',
       handler() {
@@ -78,6 +109,7 @@ const modlr_fn = () => {
             chalk`{green modlr config File was copied to ${process.cwd()}/${path.basename(
               MODLR_CONFIG_FILE,
             )}}`,
+            '\nPlease add File templates to your template folder or use `modlr copy` to copy some example Template Files to your Project',
           );
         } catch (error) {
           console.error(error);
@@ -85,19 +117,25 @@ const modlr_fn = () => {
       },
     })
     .command({
-      command: ['new', '*'],
-      description: 'Create a new Module',
-      handler: argv => {
-        const trueOptions = Object.keys(argv).reduce((r, e) => {
-          if (argv[e]) r[e] = argv[e];
-          return r;
-        }, {});
-
-        // use createModule function to create the new module.
-        createModule({
-          options: trueOptions,
-          config,
-        });
+      command: 'copy',
+      description: 'Copy Example Templates to your Project',
+      handler() {
+        try {
+          fs.copySync(
+            TEMPLATE_FOLDER,
+            process.cwd() + '/' + config.paths.templateBase,
+            {
+              overwrite: false,
+              errorOnExist: true,
+            },
+          );
+          console.log(
+            chalk`{green modlr Templates were copied to ${process.cwd()}/${config
+              .paths.templateBase}}`,
+          );
+        } catch (error) {
+          console.error(error);
+        }
       },
     })
     .options(files)

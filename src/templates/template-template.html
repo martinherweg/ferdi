@@ -1,0 +1,37 @@
+{#
+/**
+*
+* Description of what this file is for
+*
+* @package  <%= projectName %>
+<% for (var i=0; i < authors.length; i++) { -%>
+* @author <%= authors[i].name %> [<%= authors[i].email %>]
+<% } -%>
+*
+*/
+
+|--------------------------------------------------------------------------
+| <%= file %>
+|--------------------------------------------------------------------------
+
+*/
+#}
+
+
+
+{% set defaults = {
+classname: 'm-<%= moduleName.replace('-', '_') %>'
+} %}
+
+{% if options is defined %}
+  {% set options = defaults|merge(options) %}
+{% else %}
+  {% set options = defaults %}
+{% endif %}
+
+
+<div class="m-<%= moduleName %>">
+  <div class="m-<%= moduleName %>__inner">
+    <%= moduleName %>
+  </div>
+</div>
