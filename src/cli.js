@@ -1,7 +1,7 @@
 /**
- * Modlr CLI Configuration
+ * moduli CLI Configuration
  *
- * @package  modlr
+ * @package  moduli
  * @author   Martin Herweg <martin@herweg.co>
  */
 
@@ -22,28 +22,28 @@ const merge = require('deepmerge');
 const createModule = require('./createModule');
 
 // load the default config
-const defaultConfig = require('./.modlrrc');
+const defaultConfig = require('./.modulirc');
 
 // get root of project
-const MODLR_ROOT = path.resolve(__filename, '../', '../');
+const moduli_ROOT = path.resolve(__filename, '../', '../');
 // set config filename and location
-const CONFIG_FILE_NAME = './src/.modlrrc.js';
+const CONFIG_FILE_NAME = './src/.modulirc.js';
 // check if the config file exists and load the path
-const MODLR_CONFIG_FILE = fs.existsSync(
-  path.resolve(MODLR_ROOT, CONFIG_FILE_NAME),
+const moduli_CONFIG_FILE = fs.existsSync(
+  path.resolve(moduli_ROOT, CONFIG_FILE_NAME),
 )
-  ? path.resolve(MODLR_ROOT, CONFIG_FILE_NAME)
+  ? path.resolve(moduli_ROOT, CONFIG_FILE_NAME)
   : '';
 
 const TEMPLATE_FOLDER_NAME = './src/templates';
 const TEMPLATE_FOLDER = fs.existsSync(
-  path.resolve(MODLR_ROOT, TEMPLATE_FOLDER_NAME),
+  path.resolve(moduli_ROOT, TEMPLATE_FOLDER_NAME),
 )
-  ? path.resolve(MODLR_ROOT, TEMPLATE_FOLDER_NAME)
+  ? path.resolve(moduli_ROOT, TEMPLATE_FOLDER_NAME)
   : '';
 
 // check for a user Config going up from where the command was used and get it's path
-const userConfigPath = findUp.sync(['.modlrrc.js', '.modlrrc']) || '';
+const userConfigPath = findUp.sync(['.modulirc.js', '.modulirc']) || '';
 let userConfig;
 if (userConfigPath) {
   userConfig = require(userConfigPath);
@@ -53,7 +53,7 @@ if (userConfigPath) {
 const config = userConfig !== undefined ? userConfig : defaultConfig;
 
 // Main CLI Function
-const modlr_fn = () => {
+const moduli_fn = () => {
   // load files and paths from the config
   const { files, paths } = config;
 
@@ -64,19 +64,19 @@ const modlr_fn = () => {
     pathOptions[key] = {};
     pathOptions[key].alias = key.charAt(0);
     pathOptions[key].description =
-      'Modlr creates File at ' + paths.templateBase + key + '/';
+      'moduli creates File at ' + paths.templateBase + key + '/';
     pathOptions[key].group = chalk`{bgCyan Path Options}`;
   });
 
   // CLI Interface with yargs
-  const modlr = yargs
+  const moduli = yargs
     .command({
       command: ['new', '*'],
       description: 'Create a new Module',
       handler: argv => {
         if (!config)
           console.error(
-            'Please use `modlr init` to copy the config file to your project ',
+            'Please use `moduli init` to copy the config file to your project ',
           );
 
         const trueOptions = Object.keys(argv).reduce((r, e) => {
@@ -98,18 +98,18 @@ const modlr_fn = () => {
         // copy Config File from Module to Project root
         try {
           fs.copySync(
-            MODLR_CONFIG_FILE,
-            process.cwd() + '/' + path.basename(MODLR_CONFIG_FILE),
+            moduli_CONFIG_FILE,
+            process.cwd() + '/' + path.basename(moduli_CONFIG_FILE),
             {
               overwrite: false,
               errorOnExist: true,
             },
           );
           console.log(
-            chalk`{green modlr config File was copied to ${process.cwd()}/${path.basename(
-              MODLR_CONFIG_FILE,
+            chalk`{green moduli config File was copied to ${process.cwd()}/${path.basename(
+              moduli_CONFIG_FILE,
             )}}`,
-            '\nPlease add File templates to your template folder or use `modlr copy` to copy some example Template Files to your Project',
+            '\nPlease add File templates to your template folder or use `moduli copy` to copy some example Template Files to your Project',
           );
         } catch (error) {
           console.error(error);
@@ -130,7 +130,7 @@ const modlr_fn = () => {
             },
           );
           console.log(
-            chalk`{green modlr Templates were copied to ${process.cwd()}/${config
+            chalk`{green moduli Templates were copied to ${process.cwd()}/${config
               .paths.templateBase}}`,
           );
         } catch (error) {
@@ -143,4 +143,4 @@ const modlr_fn = () => {
     .help().argv;
 };
 
-module.exports = modlr_fn;
+module.exports = moduli_fn;

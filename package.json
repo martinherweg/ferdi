@@ -1,12 +1,12 @@
 {
-  "name": "modlr",
+  "name": "moduli",
   "version": "0.0.2",
   "license": "MIT",
   "preferGlobal": true,
   "bin": {
-    "modlr": "index.js"
+    "moduli": "index.js"
   },
-  "repository": "https://github.com/martinherweg/modlr",
+  "repository": "https://github.com/martinherweg/moduli",
   "dependencies": {
     "deepmerge": "^2.0.0",
     "find-up": "^2.1.0",

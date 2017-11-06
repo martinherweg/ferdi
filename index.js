@@ -1,5 +1,18 @@
 #!/usr/bin/env node
 
-const modlr = require('./src/cli');
+/**
+ * Moduli Entry Point
+ *
+ * @package  moduli
+ * @author   Martin Herweg <martin@herweg.co>
+ */
 
-modlr();
+/*
+|---------------------------------------------------
+| index.js
+|---------------------------------------------------
+*/
+
+const moduli = require('./src/cli');
+
+moduli();

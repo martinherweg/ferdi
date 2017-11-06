@@ -1,3 +1,16 @@
+/**
+ * Create Module Function
+ *
+ * @package  moduli
+ * @author   Martin Herweg <martin@herweg.co>
+ */
+
+/*
+|---------------------------------------------------
+| createModule.js
+|---------------------------------------------------
+*/
+
 const glob = require('glob');
 const chalk = require('chalk');
 const path = require('path');
@@ -23,11 +36,11 @@ const createModule = ({
   config,
   pathOptions = null,
 }) => {
-  let basePath = findUp.sync(['.modlrrc.js', '.modlrrc']);
+  let basePath = findUp.sync(['.modulirc.js', '.modulirc']);
 
   if (!basePath) {
     console.error(
-      'Please create a config file named .modlrrc.js or .modlrrc in your project root',
+      'Please create a config file named .modulirc.js or .modulirc in your project root',
     );
     process.exit();
   }

@@ -1,23 +1,23 @@
-# Modlr
+# moduli
 
-Modlr is a flexible component creation helper, it helps you to stay consistent in your component style and reduces the time required to create new components.
+moduli is a flexible component creation helper, it helps you to stay consistent in your component style and reduces the time required to create new components.
 
-You create File Templates and Modlr will create Files you want in a Folder you define.
+You create File Templates and moduli will create Files you want in a Folder you define.
 
 ## Installation
-You can install modlr global or local.
+You can install moduli global or local.
 *yarn*
 ```
-yarn global add modlr
+yarn global add moduli
 ```
 
 *npm*
 ```
-npm install -g modlr
+npm install -g moduli
 ```
 
 ## Usage
-To Start with modlr please use `modlr init` in your Project root, this will create a `.modlrrc.js` config file with some prefilled values. 
+To Start with moduli please use `moduli init` in your Project root, this will create a `.modulirc.js` config file with some prefilled values. 
 
 The config contains 3 different parts `fileHeader`, `files` and `paths`
 
@@ -26,24 +26,24 @@ In the file Header you can add Informations you want to use in your config File,
 The file- and moduleName are added automatically.
 
 ### files
-This is where the 'magic' happens, modlr create a new entry for every file type you wish to have a boilerplate for.
-This is the format modlr needs:
+This is where the 'magic' happens, moduli create a new entry for every file type you wish to have a boilerplate for.
+This is the format moduli needs:
 ```
 kind: {
-      name: '', // if you define a name modlr will take this as a base for the filename, if it is empty the last part of the path is taken as filename
+      name: '', // if you define a name moduli will take this as a base for the filename, if it is empty the last part of the path is taken as filename
       postfix: 'template', // gets added to the filename if you omit the name, leave empty if you don't want that
       extension: 'html', // extension to search for in the template folder and for the final module
-      description: 'Modlr should create a Template File', // description for the --help flag
+      description: 'moduli should create a Template File', // description for the --help flag
       default: defaults.template, // true or false if you don't want to add the flag for every new module
     },
 ```
 
 ### paths
-Define the path needed for modlr
+Define the path needed for moduli
 ```
 paths: {
-    templateBase: 'tmpl/', // template folder relative to the .modlrrc file
-    modulePath: 'src/', // output path for new modules relative to .modlrrc file
+    templateBase: 'tmpl/', // template folder relative to the .modulirc file
+    modulePath: 'src/', // output path for new modules relative to .modulirc file
     // you can add multiple subfolders in this object, relative to the modulePath
     // the key is for the option
     pathOptions: { 
@@ -69,4 +69,4 @@ paths: {
   },
   ```
 
-When you type `modlr forms/input -a` your new component gets created in `/project/folder/src/atomic/forms/input` with filenames like this `input-template.html`, `_input-style.scss` or `input-script.js`
+When you type `moduli forms/input -a` your new component gets created in `/project/folder/src/atomic/forms/input` with filenames like this `input-template.html`, `_input-style.scss` or `input-script.js`
