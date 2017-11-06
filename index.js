@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * Moduli Entry Point
+ * ferdi Entry Point
  *
- * @package  moduli
+ * @package  ferdi
  * @author   Martin Herweg <martin@herweg.co>
  */
 
@@ -13,6 +13,6 @@
 |---------------------------------------------------
 */
 
-const moduli = require('./src/cli');
+const ferdi = require('./src/cli');
 
-moduli();
+ferdi();

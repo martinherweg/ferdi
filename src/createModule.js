@@ -1,7 +1,7 @@
 /**
  * Create Module Function
  *
- * @package  moduli
+ * @package  ferdi
  * @author   Martin Herweg <martin@herweg.co>
  */
 
@@ -36,11 +36,11 @@ const createModule = ({
   config,
   pathOptions = null,
 }) => {
-  let basePath = findUp.sync(['.modulirc.js', '.modulirc']);
+  let basePath = findUp.sync(['.ferdirc.js', '.ferdirc']);
 
   if (!basePath) {
     console.error(
-      'Please create a config file named .modulirc.js or .modulirc in your project root',
+      'Please create a config file named .ferdirc.js or .ferdirc in your project root',
     );
     process.exit();
   }

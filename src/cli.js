@@ -1,7 +1,7 @@
 /**
- * moduli CLI Configuration
+ * ferdi CLI Configuration
  *
- * @package  moduli
+ * @package  ferdi
  * @author   Martin Herweg <martin@herweg.co>
  */
 
@@ -22,28 +22,28 @@ const merge = require('deepmerge');
 const createModule = require('./createModule');
 
 // load the default config
-const defaultConfig = require('./.modulirc');
+const defaultConfig = require('./.ferdirc');
 
 // get root of project
-const moduli_ROOT = path.resolve(__filename, '../', '../');
+const ferdi_ROOT = path.resolve(__filename, '../', '../');
 // set config filename and location
-const CONFIG_FILE_NAME = './src/.modulirc.js';
+const CONFIG_FILE_NAME = './src/.ferdirc.js';
 // check if the config file exists and load the path
-const moduli_CONFIG_FILE = fs.existsSync(
-  path.resolve(moduli_ROOT, CONFIG_FILE_NAME),
+const ferdi_CONFIG_FILE = fs.existsSync(
+  path.resolve(ferdi_ROOT, CONFIG_FILE_NAME),
 )
-  ? path.resolve(moduli_ROOT, CONFIG_FILE_NAME)
+  ? path.resolve(ferdi_ROOT, CONFIG_FILE_NAME)
   : '';
 
 const TEMPLATE_FOLDER_NAME = './src/templates';
 const TEMPLATE_FOLDER = fs.existsSync(
-  path.resolve(moduli_ROOT, TEMPLATE_FOLDER_NAME),
+  path.resolve(ferdi_ROOT, TEMPLATE_FOLDER_NAME),
 )
-  ? path.resolve(moduli_ROOT, TEMPLATE_FOLDER_NAME)
+  ? path.resolve(ferdi_ROOT, TEMPLATE_FOLDER_NAME)
   : '';
 
 // check for a user Config going up from where the command was used and get it's path
-const userConfigPath = findUp.sync(['.modulirc.js', '.modulirc']) || '';
+const userConfigPath = findUp.sync(['.ferdirc.js', '.ferdirc']) || '';
 let userConfig;
 if (userConfigPath) {
   userConfig = require(userConfigPath);
@@ -53,7 +53,7 @@ if (userConfigPath) {
 const config = userConfig !== undefined ? userConfig : defaultConfig;
 
 // Main CLI Function
-const moduli_fn = () => {
+const ferdi_fn = () => {
   // load files and paths from the config
   const { files, paths } = config;
 
@@ -64,19 +64,19 @@ const moduli_fn = () => {
     pathOptions[key] = {};
     pathOptions[key].alias = key.charAt(0);
     pathOptions[key].description =
-      'moduli creates File at ' + paths.templateBase + key + '/';
+      'ferdi creates File at ' + paths.templateBase + key + '/';
     pathOptions[key].group = chalk`{bgCyan Path Options}`;
   });
 
   // CLI Interface with yargs
-  const moduli = yargs
+  const ferdi = yargs
     .command({
       command: ['new', '*'],
       description: 'Create a new Module',
       handler: argv => {
         if (!config)
           console.error(
-            'Please use `moduli init` to copy the config file to your project ',
+            'Please use `ferdi init` to copy the config file to your project ',
           );
 
         const trueOptions = Object.keys(argv).reduce((r, e) => {
@@ -98,18 +98,18 @@ const moduli_fn = () => {
         // copy Config File from Module to Project root
         try {
           fs.copySync(
-            moduli_CONFIG_FILE,
-            process.cwd() + '/' + path.basename(moduli_CONFIG_FILE),
+            ferdi_CONFIG_FILE,
+            process.cwd() + '/' + path.basename(ferdi_CONFIG_FILE),
             {
               overwrite: false,
               errorOnExist: true,
             },
           );
           console.log(
-            chalk`{green moduli config File was copied to ${process.cwd()}/${path.basename(
-              moduli_CONFIG_FILE,
+            chalk`{green ferdi config File was copied to ${process.cwd()}/${path.basename(
+              ferdi_CONFIG_FILE,
             )}}`,
-            '\nPlease add File templates to your template folder or use `moduli copy` to copy some example Template Files to your Project',
+            '\nPlease add File templates to your template folder or use `ferdi copy` to copy some example Template Files to your Project',
           );
         } catch (error) {
           console.error(error);
@@ -130,7 +130,7 @@ const moduli_fn = () => {
             },
           );
           console.log(
-            chalk`{green moduli Templates were copied to ${process.cwd()}/${config
+            chalk`{green ferdi Templates were copied to ${process.cwd()}/${config
               .paths.templateBase}}`,
           );
         } catch (error) {
@@ -143,4 +143,4 @@ const moduli_fn = () => {
     .help().argv;
 };
 
-module.exports = moduli_fn;
+module.exports = ferdi_fn;

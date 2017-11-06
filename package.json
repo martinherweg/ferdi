@@ -1,12 +1,12 @@
 {
-  "name": "moduli",
+  "name": "ferdi",
   "version": "0.0.3",
   "license": "MIT",
   "preferGlobal": true,
   "bin": {
-    "moduli": "index.js"
+    "ferdi": "index.js"
   },
-  "repository": "https://github.com/martinherweg/moduli",
+  "repository": "https://github.com/martinherweg/ferdi",
   "dependencies": {
     "deepmerge": "^2.0.0",
     "find-up": "^2.1.0",
