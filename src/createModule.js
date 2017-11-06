@@ -23,7 +23,16 @@ const createModule = ({
   config,
   pathOptions = null,
 }) => {
-  const basePath = path.resolve(process.cwd());
+  let basePath = findUp.sync(['.modlrrc.js', '.modlrrc']);
+
+  if (!basePath) {
+    console.error(
+      'Please create a config file named .modlrrc.js or .modlrrc in your project root',
+    );
+    process.exit();
+  }
+
+  basePath = path.dirname(basePath);
   const { files } = config;
 
   // function to copy a template file to a defined directory
@@ -58,6 +67,10 @@ const createModule = ({
       : `${path.basename(name)}-${files[kind].postfix}`;
 
     filename = `${filename}.${fileExtension}`;
+
+    if (fileExtension.match(/scss/g)) {
+      filename = ''.concat('_', filename);
+    }
 
     destinationPath = basePath + '/' + destinationPath + '/' + filename;
     // get module data to write files
