@@ -64,7 +64,7 @@ const ferdi_fn = () => {
     pathOptions[key] = {};
     pathOptions[key].alias = key.charAt(0);
     pathOptions[key].description =
-      'ferdi creates File at ' + paths.templateBase + key + '/';
+      'ferdi creates File at ' + paths.modulePath + key + '/';
     pathOptions[key].group = chalk`{bgCyan Path Options}`;
   });
 
@@ -93,7 +93,7 @@ const ferdi_fn = () => {
     })
     .command({
       command: 'init',
-      description: 'Copy the Config File',
+      description: 'Copy the Config File to current Folder',
       handler() {
         // copy Config File from Module to Project root
         try {

@@ -17,6 +17,32 @@ npm install -g ferdi
 ```
 
 ## Usage
+```bash
+$ferdi --help
+
+Usage: ferdi [options]
+
+Path Options
+// differs depending on your config
+--atomic, -a    ferdi creates Module at src/atoms/
+--molecule, -m  ferdi creates Module at src/molecules/
+
+Options:
+  // differs depending on your config
+  --template    ferdi should create a Template File
+  --css         ferdi should create a Stylesheet File
+  --help        output usage information
+  --version     output the version number
+  
+
+Commands:
+  new <name>    Create new Module
+  init          Copy Config File to current Folder
+  copy          Copy Example Templates to your Project
+```
+
+If you installed ferdi locally you have to add an npm script to use it or if you use yarn you could use it as `yarn ferdi <command>`.
+
 To Start with ferdi please use `ferdi init` in your Project root, this will create a `.ferdirc.js` config file with some prefilled values. 
 
 The config contains 3 different parts `fileHeader`, `files` and `paths`
@@ -38,6 +64,9 @@ kind: {
     },
 ```
 
+You can now create new modules with `ferdi module/name --css --template --javascript`
+For every module that has `default: true` in its config you can omit the flag.
+
 ### paths
 Define the path needed for ferdi
 ```
@@ -53,8 +82,6 @@ paths: {
     },
   }
   ```
-
-
 ## Examples
 
 ```
