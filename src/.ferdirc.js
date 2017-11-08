@@ -8,7 +8,12 @@ const defaults = {
 
 module.exports = {
   fileHeader: {
-    authors: 'AuthorName',
+    authors: [
+      {
+        name: 'Author',
+        email: 'email',
+      },
+    ],
     projectName: 'ProjectName',
   },
   files: {
