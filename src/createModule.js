@@ -82,8 +82,7 @@ const createModule = ({
           : ''}`;
 
     filename = `${filename}.${fileExtension}`;
-
-    if (fileExtension.match(/scss/g)) {
+    if (fileExtension.match(/scss/g) && !files[kind].name) {
       filename = ''.concat('_', filename);
     }
 
