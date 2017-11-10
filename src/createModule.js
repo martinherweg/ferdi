@@ -59,9 +59,10 @@ const createModule = ({
       basePath + '/' + config.paths.templateBase,
     );
 
-    let globRegex = `?(${kind}*)`;
+    let globRegex = `?(*${kind}*)`;
 
     // get the template File
+
     const templateFile = glob.sync(globRegex, {
       cwd: templatePath,
       realpath: true,
@@ -92,16 +93,21 @@ const createModule = ({
       moduleData.pathOptions = pathOptions;
     }
 
-    fs.copyTpl(
-      templateFile[0],
-      `${destinationPath.replace('//', '/')}`,
-      moduleData,
-    );
-
-    return fs.commit(done => {
-      return console.log(
+    try {
+      fs.copyTpl(
+        templateFile[0],
+        `${destinationPath.replace('//', '/')}`,
+        moduleData,
+      );
+      console.log(
         chalk`\n{green File ${destinationPath.replace('//', '/')} was created}`,
       );
+    } catch (error) {
+      console.error('No Template File found for ' + kind, '\n' + error);
+    }
+
+    return fs.commit(done => {
+      return done;
     });
   };
 
