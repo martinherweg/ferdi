@@ -92,12 +92,16 @@ const createModule = ({
     moduleData.moduleName = path.basename(name);
     moduleData.file = filename;
 
+    if (pathOptions) {
+      moduleData.pathOptions = pathOptions;
+    }
+
     fs.copyTpl(
       templateFile[0],
       `${destinationPath.replace('//', '/')}`,
       moduleData,
     );
-
+    console.log(moduleData);
     return fs.commit(done => {
       return console.log(
         chalk`\n{green File ${destinationPath.replace('//', '/')} was created}`,
