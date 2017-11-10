@@ -61,10 +61,6 @@ const createModule = ({
 
     let globRegex = `?(${kind}*)`;
 
-    if (fileExtension.match(/scss/g)) {
-      globRegex = `?(_${kind}*)`;
-    }
-
     // get the template File
     const templateFile = glob.sync(globRegex, {
       cwd: templatePath,
