@@ -127,6 +127,7 @@ const createModule = ({
 const moduleCreation = ({ options, config }) => {
   const { files, paths } = config;
   const { pathOptions } = paths;
+
   Object.keys(files).forEach(file => {
     let destinationPathOption;
     if (options[file]) {
@@ -139,6 +140,13 @@ const moduleCreation = ({ options, config }) => {
         }
       });
       const module = files[file];
+
+      if (typeof options._[0] != 'string') {
+        console.error(
+          chalk`{red First argument must always be the name of the module}`,
+        );
+        return process.exit();
+      }
       createModule({
         name: options._[0],
         kind: file,
