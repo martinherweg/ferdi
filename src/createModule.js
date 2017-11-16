@@ -59,7 +59,11 @@ const createModule = ({
       basePath + '/' + config.paths.templateBase,
     );
 
-    let globRegex = `?(*${kind}*)`;
+    let globRegex = `?(*${kind}-*)`;
+
+    if (kind === 'template') {
+      globRegex = `?(${kind}-*)`;
+    }
 
     // get the template File
 
