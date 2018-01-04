@@ -2,3 +2,6 @@ node_modules
 yarn-error.log
 modlr.js
 src/moduleCreation.js
+.history/
+.DS_Store
+launch.json
