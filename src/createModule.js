@@ -78,9 +78,9 @@ const createModule = ({
 
     let filename = files[kind].name
       ? files[kind].name
-      : `${path.basename(name)}${files[kind].postfix
-          ? '-' + files[kind].postfix
-          : ''}`;
+      : `${path.basename(name)}${
+          files[kind].postfix ? '-' + files[kind].postfix : ''
+        }`;
 
     filename = `${filename}.${fileExtension}`;
     if (fileExtension.match(/scss/g) && !files[kind].name) {
@@ -134,6 +134,7 @@ const moduleCreation = ({ options, config }) => {
 
   Object.keys(files).forEach(file => {
     let destinationPathOption;
+
     if (options[file]) {
       Object.keys(pathOptions).forEach(path => {
         if (options[path]) {

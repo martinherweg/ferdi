@@ -18,6 +18,7 @@ const yargs = require('yargs');
 const chalk = require('chalk');
 const findUp = require('find-up');
 const merge = require('deepmerge');
+const _ = require('lodash');
 
 const createModule = require('./createModule');
 
@@ -55,7 +56,7 @@ const config = userConfig !== undefined ? userConfig : defaultConfig;
 // Main CLI Function
 const ferdi_fn = () => {
   // load files and paths from the config
-  const { files, paths } = config;
+  const { files, paths, defaults } = config;
 
   // empty object for path object
   // Loop through all Defined path Options in the Config file and save them to empty object.
@@ -79,10 +80,24 @@ const ferdi_fn = () => {
             'Please use `ferdi init` to copy the config file to your project ',
           );
 
-        const trueOptions = Object.keys(argv).reduce((r, e) => {
+        let trueOptions;
+
+        const argvOptions = Object.keys(argv).reduce((r, e) => {
           if (argv[e]) r[e] = argv[e];
+          delete r.$0;
+          delete r._;
           return r;
         }, {});
+
+        if (_.isEmpty(argvOptions)) {
+          defaults.$0 = argv.$0;
+          defaults._ = argv._;
+          trueOptions = defaults;
+        } else {
+          argvOptions.$0 = argv.$0;
+          argvOptions._ = argv._;
+          trueOptions = argvOptions;
+        }
 
         // use createModule function to create the new module.
         createModule({
@@ -130,8 +145,9 @@ const ferdi_fn = () => {
             },
           );
           console.log(
-            chalk`{green ferdi Templates were copied to ${process.cwd()}/${config
-              .paths.templateBase}}`,
+            chalk`{green ferdi Templates were copied to ${process.cwd()}/${
+              config.paths.templateBase
+            }}`,
           );
         } catch (error) {
           console.error(error);

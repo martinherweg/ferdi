@@ -1,12 +1,11 @@
-const defaults = {
-  template: true,
-  css: true,
-  javascript: true,
-  vue: false,
-  fractal: false,
-};
-
 module.exports = {
+  defaults: {
+    template: true,
+    css: true,
+    javascript: true,
+    vue: false,
+    fractal: false,
+  },
   fileHeader: {
     authors: [
       {
@@ -22,33 +21,28 @@ module.exports = {
       postfix: 'template',
       extension: 'html',
       description: 'ferdi should create a Template File',
-      default: defaults.template,
     },
     css: {
       name: '',
       postfix: 'style',
       extension: 'scss',
       description: 'ferdi should create Stylesheet File',
-      default: defaults.css,
     },
     javascript: {
       name: '',
       postfix: 'script',
       extension: 'js',
       description: 'ferdi should create JavaScript File',
-      default: defaults.javascript,
     },
     vue: {
       name: '',
       postfix: '',
       extension: 'vue',
-      default: defaults.vue,
     },
     fractal: {
       name: '',
       postfix: 'config',
       extension: 'js',
-      default: defaults.fractal,
     },
   },
   paths: {
@@ -61,5 +55,3 @@ module.exports = {
     },
   },
 };
-
-exports.defaults = defaults;

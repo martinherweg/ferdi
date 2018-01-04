@@ -56,6 +56,22 @@ The config contains 3 different parts `fileHeader`, `files` and `paths`
 In the file Header you can add Informations you want to use in your config File, the default Templates are using the Project Authors and Project Name (could be referenced by your package.json).
 The file- and moduleName are added automatically.
 
+### Defaults – since version 0.0.8
+
+In the .ferdirc.js File you can add an Object like this:
+
+```
+defaults: {
+    template: true,
+    css: true,
+    javascript: true,
+    vue: false,
+    fractal: false,
+  }
+```
+
+Every time you add a new component without any flags these default files are created (template, css and js in this case). The key must be the same as in the files Object.
+
 ### files
 
 This is where the 'magic' happens, ferdi create a new entry for every file type you wish to have a boilerplate for.
@@ -67,12 +83,10 @@ kind: {
       postfix: 'template', // gets added to the filename if you omit the name, leave empty if you don't want that
       extension: 'html', // extension to search for in the template folder and for the final module
       description: 'ferdi should create a Template File', // description for the --help flag
-      default: defaults.template, // true or false if you don't want to add the flag for every new module
     },
 ```
 
 You can now create new modules with `ferdi module/name --css --template --javascript`
-For every module that has `default: true` in its config you can omit the flag.
 
 ### templates
 
