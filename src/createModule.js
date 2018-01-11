@@ -13,10 +13,12 @@
 
 const glob = require('glob');
 const chalk = require('chalk');
+const { diff, addedDiff, deletedDiff, detailedDiff, updatedDiff } = require('deep-object-diff');
 const path = require('path');
 const memFs = require('mem-fs');
 const editor = require('mem-fs-editor');
 const findUp = require('find-up');
+const _ = require('lodash');
 
 const pkgPath = findUp.sync('package.json') || '';
 const pkg = require(pkgPath) || {};
@@ -29,19 +31,11 @@ const fs = editor.create(store);
  * @param extension
  * @param config
  */
-const createModule = ({
-  name = 'module',
-  kind,
-  extension,
-  config,
-  pathOptions = null,
-}) => {
+const createModule = ({ name = 'module', kind, extension, config, pathOptions = null }) => {
   let basePath = findUp.sync(['.ferdirc.js', '.ferdirc']);
 
   if (!basePath) {
-    console.error(
-      'Please create a config file named .ferdirc.js or .ferdirc in your project root',
-    );
+    console.error('Please create a config file named .ferdirc.js or .ferdirc in your project root');
     process.exit();
   }
 
@@ -55,9 +49,9 @@ const createModule = ({
    * @returns {*}
    */
   const copyTpl = ({ fileExtension }) => {
-    const templatePath = path.resolve(
-      basePath + '/' + config.paths.templateBase,
-    );
+    const templatePath = path.resolve(`${basePath}/${config.paths.templateBase}`);
+
+    console.log(`TemplatePath: ${templatePath}`);
 
     let globRegex = `?(*${kind}-*)`;
 
@@ -69,25 +63,21 @@ const createModule = ({
 
     const templateFile = glob.sync(globRegex, {
       cwd: templatePath,
-      realpath: true,
+      realpath: true
     });
 
     let destinationPath = config.paths.modulePath;
-    if (pathOptions) destinationPath = destinationPath + pathOptions.path;
+    if (pathOptions) destinationPath += pathOptions.path;
     destinationPath = path.join(destinationPath, name);
 
-    let filename = files[kind].name
-      ? files[kind].name
-      : `${path.basename(name)}${
-          files[kind].postfix ? '-' + files[kind].postfix : ''
-        }`;
+    let filename = files[kind].name ? files[kind].name : `${path.basename(name)}${files[kind].postfix ? `-${files[kind].postfix}` : ''}`;
 
     filename = `${filename}.${fileExtension}`;
     if (fileExtension.match(/scss/g) && !files[kind].name) {
       filename = ''.concat('_', filename);
     }
 
-    destinationPath = basePath + '/' + destinationPath + '/' + filename;
+    destinationPath = `${basePath}/${destinationPath}/${filename}`;
     // get module data to write files
     const moduleData = config.fileHeader || {};
     moduleData.moduleName = path.basename(name);
@@ -98,21 +88,13 @@ const createModule = ({
     }
 
     try {
-      fs.copyTpl(
-        templateFile[0],
-        `${destinationPath.replace('//', '/')}`,
-        moduleData,
-      );
-      console.log(
-        chalk`\n{green File ${destinationPath.replace('//', '/')} was created}`,
-      );
+      fs.copyTpl(templateFile[0], `${destinationPath.replace('//', '/')}`, moduleData);
+      console.log(chalk`\n{green File ${destinationPath.replace('//', '/')} was created}`);
     } catch (error) {
-      console.error('No Template File found for ' + kind, '\n' + error);
+      console.error(`No Template File found for ${kind}`, `\n${error}`);
     }
 
-    return fs.commit(done => {
-      return done;
-    });
+    return fs.commit(done => done);
   };
 
   if (typeof extension === Array) {
@@ -129,35 +111,53 @@ const createModule = ({
  * @param config
  */
 const moduleCreation = ({ options, config }) => {
-  const { files, paths } = config;
+  const { files, paths, defaults } = config;
   const { pathOptions } = paths;
+  let trueOptions = {};
+  const diffed = updatedDiff(options, defaults);
+
+  function checkIfObjectContains(one, two) {
+    const has = [];
+    for (const i in one) {
+      if (one[i] === two[i]) {
+        has.push(i);
+      }
+    }
+    return has.length > 0;
+  }
+
+  if (checkIfObjectContains(defaults, options)) {
+    trueOptions = options;
+  } else {
+    trueOptions = { ...options, ...diffed };
+  }
 
   Object.keys(files).forEach(file => {
     let destinationPathOption;
 
-    if (options[file]) {
+    if (trueOptions[file]) {
       Object.keys(pathOptions).forEach(path => {
         if (options[path]) {
           destinationPathOption = {
             key: path,
-            path: pathOptions[path],
+            path: pathOptions[path]
           };
         }
       });
       const module = files[file];
 
-      if (typeof options._[0] != 'string') {
-        console.error(
-          chalk`{red First argument must always be the name of the module}`,
-        );
+      if (typeof options._[0] !== 'string') {
+        console.error(`OPTIONS: ${JSON.stringify(trueOptions, null, 2)}`);
+        console.error(chalk`{red First argument must always be the name of the module}`);
         return process.exit();
       }
+
       createModule({
-        name: options._[0],
+        name: trueOptions._[0],
         kind: file,
         extension: module.extension,
         config,
-        pathOptions: destinationPathOption,
+        pathOptions: destinationPathOption
       });
     }
   });

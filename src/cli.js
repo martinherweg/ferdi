@@ -30,18 +30,10 @@ const ferdi_ROOT = path.resolve(__filename, '../', '../');
 // set config filename and location
 const CONFIG_FILE_NAME = './src/.ferdirc.js';
 // check if the config file exists and load the path
-const ferdi_CONFIG_FILE = fs.existsSync(
-  path.resolve(ferdi_ROOT, CONFIG_FILE_NAME),
-)
-  ? path.resolve(ferdi_ROOT, CONFIG_FILE_NAME)
-  : '';
+const ferdi_CONFIG_FILE = fs.existsSync(path.resolve(ferdi_ROOT, CONFIG_FILE_NAME)) ? path.resolve(ferdi_ROOT, CONFIG_FILE_NAME) : '';
 
 const TEMPLATE_FOLDER_NAME = './src/templates';
-const TEMPLATE_FOLDER = fs.existsSync(
-  path.resolve(ferdi_ROOT, TEMPLATE_FOLDER_NAME),
-)
-  ? path.resolve(ferdi_ROOT, TEMPLATE_FOLDER_NAME)
-  : '';
+const TEMPLATE_FOLDER = fs.existsSync(path.resolve(ferdi_ROOT, TEMPLATE_FOLDER_NAME)) ? path.resolve(ferdi_ROOT, TEMPLATE_FOLDER_NAME) : '';
 
 // check for a user Config going up from where the command was used and get it's path
 const userConfigPath = findUp.sync(['.ferdirc.js', '.ferdirc']) || '';
@@ -64,8 +56,7 @@ const ferdi_fn = () => {
   Object.keys(paths.pathOptions).forEach(key => {
     pathOptions[key] = {};
     pathOptions[key].alias = key.charAt(0);
-    pathOptions[key].description =
-      'ferdi creates File at ' + paths.modulePath + key + '/';
+    pathOptions[key].description = `ferdi creates File at ${paths.modulePath}${key}/`;
     pathOptions[key].group = chalk`{bgCyan Path Options}`;
   });
 
@@ -75,36 +66,13 @@ const ferdi_fn = () => {
       command: ['new', '*'],
       description: 'Create a new Module',
       handler: argv => {
-        if (!config)
-          console.error(
-            'Please use `ferdi init` to copy the config file to your project ',
-          );
-
-        let trueOptions;
-
-        const argvOptions = Object.keys(argv).reduce((r, e) => {
-          if (argv[e]) r[e] = argv[e];
-          delete r.$0;
-          delete r._;
-          return r;
-        }, {});
-
-        if (_.isEmpty(argvOptions)) {
-          defaults.$0 = argv.$0;
-          defaults._ = argv._;
-          trueOptions = defaults;
-        } else {
-          argvOptions.$0 = argv.$0;
-          argvOptions._ = argv._;
-          trueOptions = argvOptions;
-        }
-
+        if (!config) console.error('Please use `ferdi init` to copy the config file to your project ');
         // use createModule function to create the new module.
         createModule({
-          options: trueOptions,
-          config,
+          options: argv,
+          config
         });
-      },
+      }
     })
     .command({
       command: 'init',
@@ -112,51 +80,39 @@ const ferdi_fn = () => {
       handler() {
         // copy Config File from Module to Project root
         try {
-          fs.copySync(
-            ferdi_CONFIG_FILE,
-            process.cwd() + '/' + path.basename(ferdi_CONFIG_FILE),
-            {
-              overwrite: false,
-              errorOnExist: true,
-            },
-          );
+          fs.copySync(ferdi_CONFIG_FILE, `${process.cwd()}/${path.basename(ferdi_CONFIG_FILE)}`, {
+            overwrite: false,
+            errorOnExist: true
+          });
           console.log(
-            chalk`{green ferdi config File was copied to ${process.cwd()}/${path.basename(
-              ferdi_CONFIG_FILE,
-            )}}`,
-            '\nPlease add File templates to your template folder or use `ferdi copy` to copy some example Template Files to your Project',
+            chalk`{green ferdi config File was copied to ${process.cwd()}/${path.basename(ferdi_CONFIG_FILE)}}`,
+            '\nPlease add File templates to your template folder or use `ferdi copy` to copy some example Template Files to your Project'
           );
         } catch (error) {
           console.error(error);
         }
-      },
+      }
     })
     .command({
       command: 'copy',
       description: 'Copy Example Templates to your Project',
       handler() {
         try {
-          fs.copySync(
-            TEMPLATE_FOLDER,
-            process.cwd() + '/' + config.paths.templateBase,
-            {
-              overwrite: false,
-              errorOnExist: true,
-            },
-          );
-          console.log(
-            chalk`{green ferdi Templates were copied to ${process.cwd()}/${
-              config.paths.templateBase
-            }}`,
-          );
+          fs.copySync(TEMPLATE_FOLDER, `${process.cwd()}/${config.paths.templateBase}`, {
+            overwrite: false,
+            errorOnExist: true
+          });
+          console.log(chalk`{green ferdi Templates were copied to ${process.cwd()}/${config.paths.templateBase}}`);
         } catch (error) {
           console.error(error);
         }
-      },
+      }
     })
     .options(files)
     .options(pathOptions)
     .help().argv;
+
+  return ferdi;
 };
 
 module.exports = ferdi_fn;
