@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ferdi --help : ferdi --help stdout 1`] = `
+"Commands:
+  new   Create a new Module                                            [default]
+  init  Copy the Config File to current Folder
+  copy  Copy Example Templates to your Project
+
+Path Options
+  --atomic, -a   ferdi creates File at src/atomic/
+  --modules, -m  ferdi creates File at src/modules/
+
+Options:
+  --version     Show version number                                    [boolean]
+  --template    ferdi should create a Template File
+  --css         ferdi should create Stylesheet File
+  --javascript  ferdi should create JavaScript File
+  --help        Show help                                              [boolean]
+
+"
+`;
