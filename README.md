@@ -33,6 +33,7 @@ Path Options
 
 Options:
   // differs depending on your config
+  --flat        Create component Files in the Folder itself and not in a component named subfolder
   --template    ferdi should create a Template File
   --css         ferdi should create a Stylesheet File
   --help        output usage information
@@ -111,6 +112,10 @@ paths: {
     },
   }
 ```
+
+## Flat Option
+
+If you add the `--flat` flag to your command the component files will get created in the specified folder instead of in a folder named after the component
 
 ## Examples
 
