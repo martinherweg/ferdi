@@ -113,22 +113,14 @@ const moduleCreation = ({ options, config }) => {
   const { files, paths, defaults } = config;
   const { pathOptions } = paths;
   let trueOptions = {};
-  const diffed = updatedDiff(options, defaults);
 
-  function checkIfObjectContains(one, two) {
-    const has = [];
-    for (const i in one) {
-      if (one[i] === two[i]) {
-        has.push(i);
-      }
-    }
-    return has.length > 0;
-  }
+  const filteredOptions = Object.keys(options).filter(option => options[option]);
 
-  if (checkIfObjectContains(defaults, options)) {
+  const noDefaults = filteredOptions.some(item => Object.keys(defaults).indexOf(item) >= 0);
+  if (noDefaults) {
     trueOptions = options;
   } else {
-    trueOptions = { ...options, ...diffed };
+    trueOptions = { ...options, ...defaults };
   }
 
   Object.keys(files).forEach(file => {
