@@ -110,6 +110,9 @@ const ferdi_fn = () => {
     })
     .options(files)
     .options(pathOptions)
+    .option('flat', {
+      describe: 'Create component Files in the Folder itself and not in a component named subfolder'
+    })
     .help().argv;
 
   return ferdi;

@@ -31,7 +31,7 @@ const fs = editor.create(store);
  * @param extension
  * @param config
  */
-const createModule = ({ name = 'module', kind, extension, config, pathOptions = null }) => {
+const createModule = ({ name = 'module', kind, extension, config, pathOptions = null, flat = false }) => {
   let basePath = findUp.sync(['.ferdirc.js', '.ferdirc']);
 
   if (!basePath) {
@@ -51,8 +51,6 @@ const createModule = ({ name = 'module', kind, extension, config, pathOptions = 
   const copyTpl = ({ fileExtension }) => {
     const templatePath = path.resolve(`${basePath}/${config.paths.templateBase}`);
 
-    console.log(`TemplatePath: ${templatePath}`);
-
     let globRegex = `?(*${kind}-*)`;
 
     if (kind === 'template') {
@@ -68,7 +66,8 @@ const createModule = ({ name = 'module', kind, extension, config, pathOptions = 
 
     let destinationPath = config.paths.modulePath;
     if (pathOptions) destinationPath += pathOptions.path;
-    destinationPath = path.join(destinationPath, name);
+
+    destinationPath = !flat ? path.join(destinationPath, name) : destinationPath;
 
     let filename = files[kind].name ? files[kind].name : `${path.basename(name)}${files[kind].postfix ? `-${files[kind].postfix}` : ''}`;
 
@@ -157,7 +156,8 @@ const moduleCreation = ({ options, config }) => {
         kind: file,
         extension: module.extension,
         config,
-        pathOptions: destinationPathOption
+        pathOptions: destinationPathOption,
+        flat: !!options.flat
       });
     }
   });

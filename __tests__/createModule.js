@@ -56,6 +56,31 @@ describe('Create new Module', () => {
       assert.noFile([`${basePath + moduleName}/${moduleName}-script.js`]);
     });
   });
+
+  test('it should create the component directly in the specified folder', () => {
+    const moduleName = 'buttonFoo';
+    return runCli(`${moduleName} --flat`, '../src').then(stdout => {
+      const basePath = `./src/${config.paths.modulePath}`;
+      assert.file([`${basePath}_${moduleName}-style.scss`, `${basePath}${moduleName}-template.html`, `${basePath}${moduleName}-script.js`]);
+    });
+  });
+
+  test('it should create the component directly in the specified folder without defaults', () => {
+    const moduleName = 'buttonFoo';
+    return runCli(`${moduleName} --css --flat`, '../src').then(stdout => {
+      const basePath = `./src/${config.paths.modulePath}`;
+      assert.file([`${basePath}_${moduleName}-style.scss`]);
+      assert.noFile([`${basePath}${moduleName}-template.html`, `${basePath}${moduleName}-script.js`]);
+    });
+  });
+
+  test('it should create the component directly in the specified folder, even with pathOption', () => {
+    const moduleName = 'buttonFoo';
+    return runCli(`${moduleName} -m --flat`, '../src').then(stdout => {
+      const basePath = `./src/${config.paths.modulePath + config.paths.pathOptions.modules}`;
+      assert.file([`${basePath}_${moduleName}-style.scss`, `${basePath}${moduleName}-template.html`, `${basePath}${moduleName}-script.js`]);
+    });
+  });
 });
 
 function runCli(args = '', cwd = process.cwd()) {

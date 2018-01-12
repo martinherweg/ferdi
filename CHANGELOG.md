@@ -1,6 +1,10 @@
 # Change log
 
-## Ferdi v 0.0.9 - 2018-01-11
+## Ferdi v 0.0.10 - 2018-01-12
+
+* Added --flat option to create components without a subfolder.
+
+  ## Ferdi v 0.0.9 - 2018-01-11
 
 * Fixed issues introduced with 0.0.8
 * added first Test cases for the Library
