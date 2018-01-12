@@ -30,7 +30,7 @@ describe('Create new Module', () => {
     });
   });
 
-  test('it should use not defaults if flag provided and a path option is added', () => {
+  test('it should not use defaults if flag provided and a path option is added', () => {
     const moduleName = 'buttonFoo';
     return runCli(`${moduleName} -m --template`, '../src').then(stdout => {
       const basePath = `./src/${config.paths.modulePath + config.paths.pathOptions.modules}`;
@@ -39,7 +39,16 @@ describe('Create new Module', () => {
     });
   });
 
-  test('it should use not defaults if flags provided and a path option is added', () => {
+  test('it should not use defaults if non default flag provided and a path option is added', () => {
+    const moduleName = 'buttonFoo';
+    return runCli(`${moduleName} -m --vue`, '../src').then(stdout => {
+      const basePath = `./src/${config.paths.modulePath + config.paths.pathOptions.modules}`;
+      assert.file([`${basePath + moduleName}/${moduleName}.vue`]);
+      assert.noFile([`${basePath + moduleName}/${moduleName}-template.html`, `${basePath + moduleName}/_${moduleName}-style.scss`, `${basePath + moduleName}/${moduleName}-script.js`]);
+    });
+  });
+
+  test('it should not use defaults if flags provided and a path option is added', () => {
     const moduleName = 'buttonFoo';
     return runCli(`${moduleName} -m --template --css`, '../src').then(stdout => {
       const basePath = `./src/${config.paths.modulePath + config.paths.pathOptions.modules}`;
@@ -48,7 +57,7 @@ describe('Create new Module', () => {
     });
   });
 
-  test('it should use not defaults if flags provided and no path option is added', () => {
+  test('it should not use defaults if flags provided and no path option is added', () => {
     const moduleName = 'buttonFoo';
     return runCli(`${moduleName} --template --css`, '../src').then(stdout => {
       const basePath = `./src/${config.paths.modulePath}`;
@@ -62,6 +71,15 @@ describe('Create new Module', () => {
     return runCli(`${moduleName} --flat`, '../src').then(stdout => {
       const basePath = `./src/${config.paths.modulePath}`;
       assert.file([`${basePath}_${moduleName}-style.scss`, `${basePath}${moduleName}-template.html`, `${basePath}${moduleName}-script.js`]);
+    });
+  });
+
+  test('it should create the component directly in the specified folder if non default flag is provided', () => {
+    const moduleName = 'buttonFoo';
+    return runCli(`${moduleName} --vue --flat`, '../src').then(stdout => {
+      const basePath = `./src/${config.paths.modulePath}`;
+      assert.file([`${basePath}${moduleName}.vue`]);
+      assert.noFile([`${basePath}_${moduleName}-style.scss`, `${basePath}${moduleName}-template.html`, `${basePath}${moduleName}-script.js`]);
     });
   });
 
