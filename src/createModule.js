@@ -67,7 +67,14 @@ const createModule = ({ name = 'module', kind, extension, config, pathOptions = 
     let destinationPath = config.paths.modulePath;
     if (pathOptions) destinationPath += pathOptions.path;
 
-    destinationPath = !flat ? path.join(destinationPath, name) : destinationPath;
+    const splitName = flat ? name.split('/') : name;
+    let fileName = '';
+
+    if (flat) {
+      fileName = splitName.pop();
+    }
+
+    destinationPath = !flat ? path.join(destinationPath, name) : path.join(destinationPath, splitName.join('/'));
 
     let filename = files[kind].name ? files[kind].name : `${path.basename(name)}${files[kind].postfix ? `-${files[kind].postfix}` : ''}`;
 
@@ -85,6 +92,12 @@ const createModule = ({ name = 'module', kind, extension, config, pathOptions = 
     if (pathOptions) {
       moduleData.pathOptions = pathOptions;
     }
+
+    console.log(JSON.stringify({
+      name,
+      filename,
+      destinationPath,
+    }, null, 2));
 
     try {
       fs.copyTpl(templateFile[0], `${destinationPath.replace('//', '/')}`, moduleData);
