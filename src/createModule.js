@@ -93,11 +93,11 @@ const createModule = ({ name = 'module', kind, extension, config, pathOptions = 
       moduleData.pathOptions = pathOptions;
     }
 
-    console.log(JSON.stringify({
-      name,
-      filename,
-      destinationPath,
-    }, null, 2));
+    // console.log(JSON.stringify({
+    //   name,
+    //   filename,
+    //   destinationPath,
+    // }, null, 2));
 
     try {
       fs.copyTpl(templateFile[0], `${destinationPath.replace('//', '/')}`, moduleData);
