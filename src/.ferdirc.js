@@ -4,7 +4,8 @@ module.exports = {
     css: true,
     javascript: true,
     vue: false,
-    fractal: false
+    fractal: false,
+    vuexModule: false,
   },
   fileHeader: {
     authors: [
@@ -38,6 +39,12 @@ module.exports = {
       name: '',
       postfix: '',
       extension: 'vue'
+    },
+    vuexModule: {
+      name: '',
+      postfix: '',
+      extension: 'js',
+      path: 'js/store/modules/',
     },
     fractal: {
       name: '',
