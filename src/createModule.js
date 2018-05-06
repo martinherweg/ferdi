@@ -11,20 +11,20 @@
 |---------------------------------------------------
 */
 
-const glob = require('glob');
-const chalk = require('chalk');
+const glob                                                        = require('glob');
+const chalk                                                       = require('chalk');
 const { diff, addedDiff, deletedDiff, detailedDiff, updatedDiff } = require('deep-object-diff');
-const path = require('path');
-const memFs = require('mem-fs');
-const editor = require('mem-fs-editor');
-const findUp = require('find-up');
-const _ = require('lodash');
+const path                                                        = require('path');
+const memFs                                                       = require('mem-fs');
+const editor                                                      = require('mem-fs-editor');
+const findUp                                                      = require('find-up');
+const _                                                           = require('lodash');
 
 const pkgPath = findUp.sync('package.json') || '';
-const pkg = require(pkgPath) || {};
+const pkg     = require(pkgPath) || {};
 
 const store = memFs.create();
-const fs = editor.create(store);
+const fs    = editor.create(store);
 
 /**
  *
@@ -39,7 +39,7 @@ const createModule = ({ name = 'module', kind, extension, config, pathOptions = 
     process.exit();
   }
 
-  basePath = path.dirname(basePath);
+  basePath        = path.dirname(basePath);
   const { files } = config;
 
   // function to copy a template file to a defined directory
@@ -68,7 +68,7 @@ const createModule = ({ name = 'module', kind, extension, config, pathOptions = 
     if (pathOptions) destinationPath += pathOptions.path;
 
     const splitName = flat ? name.split('/') : name;
-    let fileName = '';
+    let fileName    = '';
 
     if (flat) {
       fileName = splitName.pop();
@@ -83,11 +83,11 @@ const createModule = ({ name = 'module', kind, extension, config, pathOptions = 
       filename = ''.concat('_', filename);
     }
 
-    destinationPath = `${basePath}/${destinationPath}/${filename}`;
+    destinationPath       = `${basePath}/${destinationPath}/${filename}`;
     // get module data to write files
-    const moduleData = config.fileHeader || {};
+    const moduleData      = config.fileHeader || {};
     moduleData.moduleName = path.basename(name);
-    moduleData.file = filename;
+    moduleData.file       = filename;
 
     if (pathOptions) {
       moduleData.pathOptions = pathOptions;
@@ -102,7 +102,7 @@ const createModule = ({ name = 'module', kind, extension, config, pathOptions = 
     try {
       fs.copyTpl(templateFile[0], `${destinationPath.replace('//', '/')}`, moduleData);
       console.log(chalk`\n{green File ${destinationPath.replace('//', '/')} was created}`);
-    } catch (error) {
+    } catch ( error ) {
       console.error(`No Template File found for ${kind}`, `\n${error}`);
     }
 
@@ -124,8 +124,8 @@ const createModule = ({ name = 'module', kind, extension, config, pathOptions = 
  */
 const moduleCreation = ({ options, config }) => {
   const { files, paths, defaults } = config;
-  const { pathOptions } = paths;
-  let trueOptions = {};
+  const { pathOptions }            = paths;
+  let trueOptions                  = {};
 
   const filteredOptions = Object.keys(options).filter(option => options[option]);
 
@@ -140,14 +140,22 @@ const moduleCreation = ({ options, config }) => {
     let destinationPathOption;
 
     if (trueOptions[file]) {
-      Object.keys(pathOptions).forEach(path => {
-        if (options[path]) {
-          destinationPathOption = {
-            key: path,
-            path: pathOptions[path]
-          };
-        }
-      });
+      if (files[file].path) {
+        destinationPathOption = {
+          key: file,
+          path: files[file].path
+        };
+      } else {
+        Object.keys(pathOptions).forEach(path => {
+          if (options[path]) {
+            destinationPathOption = {
+              key: path,
+              path: pathOptions[path]
+            };
+          }
+        });
+      }
+
       const module = files[file];
 
       if (typeof options._[0] !== 'string') {

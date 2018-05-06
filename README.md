@@ -72,6 +72,7 @@ defaults: {
 ```
 
 Every time you add a new component without any flags these default files are created (template, css and js in this case). The key must be the same as in the files Object.
+Every key in the files Object must also be in the defaults Object.
 
 ### files
 
@@ -84,6 +85,7 @@ kind: {
       postfix: 'template', // gets added to the filename if you omit the name, leave empty if you don't want that
       extension: 'html', // extension to search for in the template folder and for the final module
       description: 'ferdi should create a Template File', // description for the --help flag
+      path: 'js/store/modules' // Added in 0.0.15 | if file has a path option every path option provided by flag will be ignored and the module will be created in the specified folder. 
     },
 ```
 

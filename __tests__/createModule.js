@@ -50,18 +50,18 @@ describe('Create new Module', () => {
 
   test('it should not use defaults if flags provided and a path option is added', () => {
     const moduleName = 'buttonFoo';
-    return runCli(`${moduleName} -m --template --css`, '../src').then(stdout => {
+    return runCli(`${moduleName} -m --template --vue`, '../src').then(stdout => {
       const basePath = `./src/${config.paths.modulePath + config.paths.pathOptions.modules}`;
-      assert.file([`${basePath + moduleName}/_${moduleName}-style.scss`, `${basePath + moduleName}/${moduleName}-template.html`]);
+      assert.file([`${basePath + moduleName}/${moduleName}.vue`, `${basePath + moduleName}/${moduleName}-template.html`]);
       assert.noFile([`${basePath + moduleName}/${moduleName}-script.js`]);
     });
   });
 
   test('it should not use defaults if flags provided and no path option is added', () => {
     const moduleName = 'buttonFoo';
-    return runCli(`${moduleName} --template --css`, '../src').then(stdout => {
+    return runCli(`${moduleName} --template --vue`, '../src').then(stdout => {
       const basePath = `./src/${config.paths.modulePath}`;
-      assert.file([`${basePath + moduleName}/_${moduleName}-style.scss`, `${basePath + moduleName}/${moduleName}-template.html`]);
+      assert.file([`${basePath + moduleName}/${moduleName}.vue`, `${basePath + moduleName}/${moduleName}-template.html`]);
       assert.noFile([`${basePath + moduleName}/${moduleName}-script.js`]);
     });
   });
@@ -98,6 +98,49 @@ describe('Create new Module', () => {
       const basePath = `./src/${config.paths.modulePath + config.paths.pathOptions.modules}`;
       assert.file([`${basePath}_${moduleName}-style.scss`, `${basePath}${moduleName}-template.html`, `${basePath}${moduleName}-script.js`]);
     });
+  });
+
+  test('it should create component specified in component path option', () => {
+    const moduleName = 'vuxModule';
+
+    return runCli(`${moduleName} --vuexModule --flat`, '../src')
+      .then(stdout => {
+        const basePath = `./src/${config.paths.modulePath}`;
+        assert.file([`${basePath}js/store/modules/${moduleName}.js`]);
+        assert.noFile([`${basePath}${moduleName}/${moduleName}-template.html`, `${basePath}${moduleName}/{moduleName}-script.js`]);
+      })
+  });
+
+  test('it should create component specified in component path option in subfolder', () => {
+    const moduleName = 'vuxModule';
+
+    return runCli(`${moduleName} --vuexModule`, '../src')
+      .then(stdout => {
+        const basePath = `./src/${config.paths.modulePath}`;
+        assert.file([`${basePath}js/store/modules/${moduleName}/${moduleName}.js`]);
+        assert.noFile([`${basePath}${moduleName}/${moduleName}-template.html`, `${basePath}${moduleName}/{moduleName}-script.js`]);
+      })
+  });
+
+  test('it should create component specified in component path option even when path option is provided', () => {
+    const moduleName = 'vuxModule';
+
+    return runCli(`${moduleName} --vuexModule -m --flat`, '../src')
+      .then(stdout => {
+        const basePath = `./src/${config.paths.modulePath}`;
+        const basePathWithOption = `./src/${config.paths.modulePath + config.paths.pathOptions.modules}`;
+        assert.file([`${basePath}js/store/modules/${moduleName}.js`]);
+        assert.noFile([
+          `${basePath}${moduleName}/${moduleName}-template.html`,
+          `${basePath}${moduleName}-template.html`,
+          `${basePathWithOption}${moduleName}-template.html`,
+          `${basePath}${moduleName}/{moduleName}-script.js`,
+          `${basePathWithOption}${moduleName}/{moduleName}-script.js`,
+          `${basePath}{moduleName}-script.js`,
+          `${basePathWithOption}{moduleName}-script.js`,
+          `${basePathWithOption}js/store/modules/${moduleName}.js`
+        ]);
+      })
   });
 });
 
