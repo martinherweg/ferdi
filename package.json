@@ -3,6 +3,10 @@
   "version": "0.0.15",
   "license": "MIT",
   "preferGlobal": true,
+  "engines": {
+    "node": ">=8.6.0"
+  },
+  "engineStrict": true,
   "bin": {
     "ferdi": "index.js"
   },
