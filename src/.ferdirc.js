@@ -8,30 +8,28 @@ module.exports = {
     vuexModule: false,
   },
   fileHeader: {
-    authors: [
-      {
-        name: 'Author',
-        email: 'email'
-      }
-    ],
+    authors: [{
+      name: 'Author',
+      email: 'email'
+    }],
     projectName: 'ProjectName'
   },
   files: {
     template: {
       name: '',
-      postfix: 'template',
+      postfix: '-template',
       extension: 'html',
       description: 'ferdi should create a Template File'
     },
     css: {
       name: '',
-      postfix: 'style',
+      postfix: '-style',
       extension: 'scss',
       description: 'ferdi should create Stylesheet File'
     },
     javascript: {
       name: '',
-      postfix: 'script',
+      postfix: '-script',
       extension: 'js',
       description: 'ferdi should create JavaScript File'
     },

@@ -155,7 +155,9 @@ function runCli(args = '', cwd = process.cwd()) {
     let stdout = '';
     let stderr = '';
     const command = `${CLI_PATH} ${args}`;
-    const child = spawn(command, { cwd });
+    const child = spawn(command, {
+      cwd
+    });
     child.on('error', error => {
       reject(error);
     });
