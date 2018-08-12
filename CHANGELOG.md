@@ -1,5 +1,9 @@
 # Change log
 
+## Ferdi v 0.0.15 - 2018-08-12
+
+* Added functionality to add multiple Files see [#14];
+
 ## Ferdi v 0.0.10 - 2018-01-12
 
 * Added --flat option to create components without a subfolder.

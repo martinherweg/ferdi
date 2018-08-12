@@ -74,6 +74,9 @@ defaults: {
 Every time you add a new component without any flags these default files are created (template, css and js in this case). The key must be the same as in the files Object.
 Every key in the files Object must also be in the defaults Object.
 
+### Multiple "Components"
+If you want to add multiple Components with the same options you can do that by writing `ferdi foo bar --option` this creates a `foo` and a `bar` component
+
 ### files
 
 This is where the 'magic' happens, ferdi create a new entry for every file type you wish to have a boilerplate for.
