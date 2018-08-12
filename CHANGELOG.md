@@ -1,6 +1,6 @@
 # Change log
 
-## Ferdi v 0.0.15 - 2018-08-12
+## Ferdi v 0.0.14 - 2018-08-12
 
 * Added functionality to add multiple Files see [#14];
 
