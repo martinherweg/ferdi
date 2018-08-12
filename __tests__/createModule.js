@@ -165,7 +165,6 @@ describe('create multiple modules with the same options', () => {
   test('it should create multiple modules with same settings in same dir if multiple Modulesa are provided with --flat option', () => {
     const moduleName = 'buttonFoo buttonBar buttonBaz';
     return runCli(`${moduleName} -m --flat`, '../src').then(stdout => {
-      console.log(stdout);
       const basePath = `./src/${config.paths.modulePath + config.paths.pathOptions.modules}`;
 
       const modules = moduleName.split(' ');
