@@ -60,6 +60,13 @@ const ferdi_fn = () => {
     pathOptions[key].group = chalk`{bgCyan Path Options}`;
   });
 
+  const fileOptions = {};
+  Object.keys(files).forEach(key => {
+    fileOptions[key] = {};
+    fileOptions[key].description = `ferdi creates a ${key}`;
+    fileOptions[key].group = chalk`{bgCyan File Options}`;
+  });
+
   // CLI Interface with yargs
   const ferdi = yargs
     .command({
@@ -108,7 +115,7 @@ const ferdi_fn = () => {
         }
       }
     })
-    .options(files)
+    .options(fileOptions)
     .options(pathOptions)
     .option('flat', {
       describe: 'Create component Files in the Folder itself and not in a component named subfolder'
