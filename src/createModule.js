@@ -20,9 +20,6 @@ const editor                                                      = require('mem
 const findUp                                                      = require('find-up');
 const _                                                           = require('lodash');
 
-const pkgPath = findUp.sync('package.json') || '';
-const pkg     = require(pkgPath) || {};
-
 const store = memFs.create();
 const fs    = editor.create(store);
 
@@ -164,14 +161,16 @@ const moduleCreation = ({ options, config }) => {
         return process.exit();
       }
 
-      createModule({
-        name: trueOptions._[0],
-        kind: file,
-        extension: module.extension,
-        config,
-        pathOptions: destinationPathOption,
-        flat: !!options.flat
-      });
+      trueOptions._.forEach(thisModule => {
+        createModule({
+          name: thisModule,
+          kind: file,
+          extension: module.extension,
+          config,
+          pathOptions: destinationPathOption,
+          flat: !!options.flat
+        });
+      })
     }
   });
 };

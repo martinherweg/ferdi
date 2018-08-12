@@ -144,6 +144,39 @@ describe('Create new Module', () => {
   });
 });
 
+
+
+describe('create multiple modules with the same options', () => {
+  test('it should create multiple modules with same settings if multiple module names are provided', () => {
+    const moduleName = 'buttonFoo buttonBar buttonBaz';
+    return runCli(`${moduleName} -m`, '../src').then(stdout => {
+      const basePath = `./src/${config.paths.modulePath + config.paths.pathOptions.modules}`;
+
+      const modules = moduleName.split(' ');
+
+      modules.forEach(module => {
+        assert.file([`${basePath + module}/_${module}-style.scss`]);
+        assert.file([`${basePath + module}/${module}-template.html`]);
+        assert.file([`${basePath + module}/${module}-script.js`]);
+      });
+    });
+  });
+
+  test('it should create multiple modules with same settings in same dir if multiple Modulesa are provided with --flat option', () => {
+    const moduleName = 'buttonFoo buttonBar buttonBaz';
+    return runCli(`${moduleName} -m --flat`, '../src').then(stdout => {
+      console.log(stdout);
+      const basePath = `./src/${config.paths.modulePath + config.paths.pathOptions.modules}`;
+
+      const modules = moduleName.split(' ');
+
+      modules.forEach(module => {
+        assert.file([`${basePath}_${module}-style.scss`, `${basePath}${module}-template.html`, `${basePath}${module}-script.js`]);
+      });
+    });
+  });
+});
+
 function runCli(args = '', cwd = process.cwd()) {
   const isRelative = cwd[0] !== '/';
 

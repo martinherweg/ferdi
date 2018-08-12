@@ -6,18 +6,23 @@ exports[`ferdi --help : ferdi --help stdout 1`] = `
   init  Copy the Config File to current Folder
   copy  Copy Example Templates to your Project
 
-Path Options
+[46mFile Options[49m
+  --template    ferdi creates a template
+  --css         ferdi creates a css
+  --javascript  ferdi creates a javascript
+  --vue         ferdi creates a vue
+  --vuexModule  ferdi creates a vuexModule
+  --fractal     ferdi creates a fractal
+
+[46mPath Options[49m
   --atomic, -a   ferdi creates File at src/atomic/
   --modules, -m  ferdi creates File at src/modules/
 
 Options:
-  --version     Show version number                                    [boolean]
-  --template    ferdi should create a Template File
-  --css         ferdi should create Stylesheet File
-  --javascript  ferdi should create JavaScript File
-  --flat        Create component Files in the Folder itself and not in a
-                component named subfolder
-  --help        Show help                                              [boolean]
+  --version  Show version number                                       [boolean]
+  --flat     Create component Files in the Folder itself and not in a component
+             named subfolder
+  --help     Show help                                                 [boolean]
 
 "
 `;
