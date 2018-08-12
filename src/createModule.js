@@ -89,7 +89,7 @@ const createModule = ({
     }
 
     destinationPath = !flat ? path.join(destinationPath, name) : path.join(destinationPath, splitName.join('/'));
-    console.log(files[kind]);
+    // console.log(files[kind]);
     let filename = files[kind].name ? files[kind].name : `${path.basename(name)}${files[kind].postfix ? `${files[kind].postfix}` : ''}`;
 
     filename = `${filename}.${fileExtension}`;
