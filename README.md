@@ -57,6 +57,13 @@ The config contains 3 different parts `fileHeader`, `files` and `paths`
 In the file Header you can add Informations you want to use in your config File, the default Templates are using the Project Authors and Project Name (could be referenced by your package.json).
 The file- and moduleName are added automatically.
 
+### Available Data in Templates
+
+- Everything you add to the File Header Object, in the default config `<%= projectName %>` and `<%= authors.[name, email] %>`
+- `<%= file %>` the filename you used
+- `<%= moduleName %> the component Name
+- `<% pathOptions %>` Every path Option you have in your config.
+
 ### Defaults – since version 0.0.8
 
 In the .ferdirc.js File you can add an Object like this:
