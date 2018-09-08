@@ -61,8 +61,9 @@ The file- and moduleName are added automatically.
 
 - Everything you add to the File Header Object, in the default config `<%= projectName %>` and `<%= authors.[name, email] %>`
 - `<%= file %>` the filename you used
-- `<%= moduleName %> the component Name
+- `<%= moduleName %>` the component Name
 - `<% pathOptions %>` Every path Option you have in your config.
+- `<%= modulePath %>` Path and Filename (without extension)
 
 ### Defaults – since version 0.0.8
 
