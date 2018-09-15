@@ -127,7 +127,7 @@ describe('Create new Module', () => {
 
     return runCli(`${moduleName} --vuexModule -m --flat`, '../src')
       .then(stdout => {
-        const basePath = `./src/${config.paths.modulePath}`;
+        const basePath           = `./src/${config.paths.modulePath}`;
         const basePathWithOption = `./src/${config.paths.modulePath + config.paths.pathOptions.modules}`;
         assert.file([`${basePath}js/store/modules/${moduleName}.js`]);
         assert.noFile([
@@ -140,7 +140,7 @@ describe('Create new Module', () => {
           `${basePathWithOption}{moduleName}-script.js`,
           `${basePathWithOption}js/store/modules/${moduleName}.js`
         ]);
-      })
+      });
   });
 });
 
