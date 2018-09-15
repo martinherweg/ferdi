@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ferdi --help : ferdi --help stdout 1`] = `
+"Commands:
+  new   Create a new Module                                            [default]
+  init  Copy the Config File to current Folder
+  copy  Copy Example Templates to your Project
+
+File Options
+  --template    ferdi creates a template
+  --css         ferdi creates a css
+  --javascript  ferdi creates a javascript
+  --vue         ferdi creates a vue
+  --vuexModule  ferdi creates a vuexModule
+  --fractal     ferdi creates a fractal
+
+Path Options
+  --atomic, -a   ferdi creates File at src/atomic/
+  --modules, -m  ferdi creates File at src/modules/
+
+Options:
+  --version  Show version number                                       [boolean]
+  --flat     Create component Files in the Folder itself and not in a component
+             named subfolder
+  --append   Appends Component to a importingFile specified in the config
+  --help     Show help                                                 [boolean]
+
+"
+`;
