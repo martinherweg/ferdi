@@ -50,6 +50,19 @@ module.exports = {
       extension: 'js'
     }
   },
+  importingFiles: {
+    // this is just an example and should be modified to your needs
+    // it indicates that other file types than scss are supported but that is not true at the moment
+    scss: {
+      components: {
+        // path to the file the the import should be added to
+        path: '',
+        // if not provided files are imported relative to the above file
+        // you could add an webpack alias here for example
+        prefix: '',
+      },
+    },
+  },
   paths: {
     templateBase: 'templates/',
     modulePath: 'src/',
