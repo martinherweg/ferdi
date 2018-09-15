@@ -4,8 +4,12 @@ const { extension, append } = require('../src/appendToFile');
 
 beforeEach(() => {
   const mocksDir = path.resolve('.', '__tests__', '__mocks__');
-  fs.writeFileSync(mocksDir + '/test.scss', `@import 'test1.scss';
-@import 'test2.scss';`, 'utf8');
+  fs.writeFileSync(
+    mocksDir + '/test.scss',
+    `@import 'test1.scss';
+@import 'test2.scss';`,
+    'utf8',
+  );
 });
 
 afterEach(() => {
@@ -19,7 +23,9 @@ describe('append to file tests', () => {
   });
 
   it('throws an error when no filename is provided', () => {
-    expect(() => append({ importingFile: path.resolve('.', '__tests__', '__mocks__', 'test.scss') })).toThrow('No filename provided');
+    expect(() =>
+      append({ importingFile: path.resolve('.', '__tests__', '__mocks__', 'test.scss') }),
+    ).toThrow('No filename provided');
   });
 
   it('throws an error when no importing File is provided', () => {
@@ -27,11 +33,19 @@ describe('append to file tests', () => {
   });
 
   it('throws an error when file is not scss', () => {
-    expect(() => append({ filename: 'appendedFile.js', importingFile: path.resolve('.', '__tests__', '__mocks__', 'test.scss') })).toThrow(`Can't import in files other than SCSS`);
+    expect(() =>
+      append({
+        filename: 'appendedFile.js',
+        importingFile: path.resolve('.', '__tests__', '__mocks__', 'test.scss'),
+      }),
+    ).toThrow(`Can't import in files other than SCSS`);
   });
 
   it('adds new import to specified file', () => {
-    append({ filename: 'appendedFile.scss', importingFile: path.resolve('.', '__tests__', '__mocks__', 'test.scss') });
+    append({
+      filename: 'appendedFile.scss',
+      importingFile: path.resolve('.', '__tests__', '__mocks__', 'test.scss'),
+    });
     const file = fs.readFileSync(path.resolve('.', '__tests__', '__mocks__', 'test.scss'), 'utf8');
     expect(file).toMatchInlineSnapshot(`
 "@import 'test1.scss';
