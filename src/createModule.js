@@ -13,13 +13,8 @@
 
 const glob = require('glob');
 const chalk = require('chalk');
-const {
-  diff,
-  addedDiff,
-  deletedDiff,
-  detailedDiff,
-  updatedDiff
-} = require('deep-object-diff');
+const { append } = require('./appendToFile');
+const { diff, addedDiff, deletedDiff, detailedDiff, updatedDiff } = require('deep-object-diff');
 const path = require('path');
 const memFs = require('mem-fs');
 const editor = require('mem-fs-editor');
@@ -40,7 +35,8 @@ const createModule = ({
   extension,
   config,
   pathOptions = null,
-  flat = false
+  flat = false,
+  appendToFile = '',
 }) => {
   let basePath = findUp.sync(['.ferdirc.js', '.ferdirc']);
 
@@ -50,9 +46,7 @@ const createModule = ({
   }
 
   basePath = path.dirname(basePath);
-  const {
-    files
-  } = config;
+  const { files } = config;
 
   // function to copy a template file to a defined directory
   /**
@@ -60,9 +54,7 @@ const createModule = ({
    * @param fileExtension
    * @returns {*}
    */
-  const copyTpl = ({
-    fileExtension
-  }) => {
+  const copyTpl = ({ fileExtension }) => {
     const templatePath = path.resolve(`${basePath}/${config.paths.templateBase}`);
 
     let globRegex = `?(*${kind}-*)`;
@@ -75,7 +67,7 @@ const createModule = ({
 
     const templateFile = glob.sync(globRegex, {
       cwd: templatePath,
-      realpath: true
+      realpath: true,
     });
 
     let destinationPath = config.paths.modulePath;
@@ -88,12 +80,36 @@ const createModule = ({
       fileName = splitName.pop();
     }
 
-    destinationPath = !flat ? path.join(destinationPath, name) : path.join(destinationPath, splitName.join('/'));
+    destinationPath = !flat ?
+      path.join(destinationPath, name) :
+      path.join(destinationPath, splitName.join('/'));
     // console.log(files[kind]);
-    let filename = files[kind].name ? files[kind].name : `${path.basename(name)}${files[kind].postfix ? `${files[kind].postfix}` : ''}`;
+    let filename = files[kind].name ?
+      files[kind].name :
+      `${path.basename(name)}${files[kind].postfix ? `${files[kind].postfix}` : ''}`;
 
     filename = `${filename}.${fileExtension}`;
     if (fileExtension.match(/scss/g) && !files[kind].name) {
+      // append file just for css currently
+      if (appendToFile) {
+        let fileToImport;
+        const fileImportConfig = config.importingFiles[fileExtension][appendToFile];
+
+        if (fileImportConfig.prefix) {
+          fileToImport = `${fileImportConfig.prefix}${name}/${filename}`;
+        } else {
+          fileToImport = path.relative(
+            path.resolve(basePath, fileImportConfig.path),
+            path.resolve(basePath, destinationPath, filename),
+          );
+        }
+
+        append({
+          filename: fileToImport,
+          importingFile: fileImportConfig.path,
+        });
+      }
+
       filename = ''.concat('_', filename);
     }
 
@@ -115,7 +131,7 @@ const createModule = ({
 
     try {
       fs.copyTpl(templateFile[0], `${destinationPath.replace('//', '/')}`, moduleData);
-      console.log(chalk `\n{green File ${destinationPath.replace('//', '/')} was created}`);
+      console.log(chalk`\n{green File ${destinationPath.replace('//', '/')} was created}`);
     } catch (error) {
       console.error(`No Template File found for ${kind}`, `\n${error}`);
     }
@@ -124,12 +140,14 @@ const createModule = ({
   };
 
   if (typeof extension === Array) {
-    extension.forEach(extension => copyTpl({
-      fileExtension: extension
-    }));
+    extension.forEach(extension =>
+      copyTpl({
+        fileExtension: extension,
+      }),
+    );
   } else {
     copyTpl({
-      fileExtension: extension
+      fileExtension: extension,
     });
   }
   // console.log(`Filename: ${filename}`);
@@ -140,18 +158,9 @@ const createModule = ({
  * @param options
  * @param config
  */
-const moduleCreation = ({
-  options,
-  config
-}) => {
-  const {
-    files,
-    paths,
-    defaults
-  } = config;
-  const {
-    pathOptions
-  } = paths;
+const moduleCreation = ({ options, config }) => {
+  const { files, paths, defaults } = config;
+  const { pathOptions } = paths;
   let trueOptions = {};
 
   const filteredOptions = Object.keys(options).filter(option => options[option]);
@@ -160,8 +169,9 @@ const moduleCreation = ({
   if (noDefaults) {
     trueOptions = options;
   } else {
-    trueOptions = { ...options,
-      ...defaults
+    trueOptions = {
+      ...options,
+      ...defaults,
     };
   }
 
@@ -172,14 +182,14 @@ const moduleCreation = ({
       if (files[file].path) {
         destinationPathOption = {
           key: file,
-          path: files[file].path
+          path: files[file].path,
         };
       } else {
         Object.keys(pathOptions).forEach(path => {
           if (options[path]) {
             destinationPathOption = {
               key: path,
-              path: pathOptions[path]
+              path: pathOptions[path],
             };
           }
         });
@@ -189,7 +199,7 @@ const moduleCreation = ({
 
       if (typeof options._[0] !== 'string') {
         console.error(`OPTIONS: ${JSON.stringify(trueOptions, null, 2)}`);
-        console.error(chalk `{red First argument must always be the name of the module}`);
+        console.error(chalk`{red First argument must always be the name of the module}`);
         return process.exit();
       }
 
@@ -200,9 +210,10 @@ const moduleCreation = ({
           extension: module.extension,
           config,
           pathOptions: destinationPathOption,
-          flat: !!options.flat
+          flat: !!options.flat,
+          appendToFile: options.append || '',
         });
-      })
+      });
     }
   });
 };
