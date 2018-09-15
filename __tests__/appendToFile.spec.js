@@ -1,11 +1,11 @@
-const path = require('path');
-const fs = require('fs-extra');
+const path                  = require('path');
+const fs                    = require('fs-extra');
 const { extension, append } = require('../src/appendToFile');
 
 beforeEach(() => {
   const mocksDir = path.resolve('.', '__tests__', '__mocks__');
   fs.writeFileSync(
-    mocksDir + '/test.scss',
+    `${mocksDir}/test.scss`,
     `@import 'test1.scss';
 @import 'test2.scss';`,
     'utf8',
@@ -38,7 +38,7 @@ describe('append to file tests', () => {
         filename: 'appendedFile.js',
         importingFile: path.resolve('.', '__tests__', '__mocks__', 'test.scss'),
       }),
-    ).toThrow(`Can't import in files other than SCSS`);
+    ).toThrow('Can\'t import in files other than SCSS');
   });
 
   it('adds new import to specified file', () => {
