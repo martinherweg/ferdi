@@ -120,6 +120,9 @@ const ferdi_fn = () => {
     .option('flat', {
       describe: 'Create component Files in the Folder itself and not in a component named subfolder'
     })
+    .option('append', {
+      describe: 'Appends Component to a importingFile specified in the config'
+    })
     .help().argv;
 
   return ferdi;
