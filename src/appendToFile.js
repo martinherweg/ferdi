@@ -37,7 +37,7 @@ exports.append = function({ filename, importingFile } = {}) {
   return fs.appendFileSync(
     importingFile,
     `
-@import '${filename}';
+@import '${filename.replace('.scss', '')}';
 `,
     'utf8',
   );

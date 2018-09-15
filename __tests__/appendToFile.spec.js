@@ -6,8 +6,8 @@ beforeEach(() => {
   const mocksDir = path.resolve('.', '__tests__', '__mocks__');
   fs.writeFileSync(
     `${mocksDir}/test.scss`,
-    `@import 'test1.scss';
-@import 'test2.scss';`,
+    `@import 'test1';
+@import 'test2';`,
     'utf8',
   );
 });
@@ -48,9 +48,9 @@ describe('append to file tests', () => {
     });
     const file = fs.readFileSync(path.resolve('.', '__tests__', '__mocks__', 'test.scss'), 'utf8');
     expect(file).toMatchInlineSnapshot(`
-"@import 'test1.scss';
-@import 'test2.scss';
-@import 'appendedFile.scss';
+"@import 'test1';
+@import 'test2';
+@import 'appendedFile';
 "
 `);
   });
