@@ -122,6 +122,30 @@ paths: {
 
 If you add the `--flat` flag to your command the component files will get created in the specified folder instead of in a folder named after the component
 
+## Append Option -- since v 1.0.0-beta.1
+There is a new option in the config files
+```
+importingFiles: {
+    scss: {
+      components: {
+        // path to the file the the import should be added to
+        path: '',
+        // if not provided files are imported relative to the above file
+        // you could add an webpack alias here for example
+        prefix: '',
+      },
+    },
+  },
+```
+
+Even if it looks like you can auto import more file types than scss that is not true and is meant as preparation for
+the future.
+
+You can define multiple options under scss which can then be used at moduleCreation which should look like this 
+`ferdi FooBar --css --append=components`. In the path you should add the file the import should be written to
+for example `src/scss/_components.scss` then `FooBar` would be imported relative to that file.
+If you provide a prefix like `@Components` the import would look like this `@Components/FooBar`.
+
 ## Examples
 
 ```

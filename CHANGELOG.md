@@ -1,5 +1,9 @@
 # Change log
 
+## Ferdi v 1.0.0-beta.1 - 2018
+
+* added option to append scss files to an specified file
+
 ## Ferdi v 0.0.18 - 2018-08-12
 
 * Added functionality to add multiple Files see [#14];
