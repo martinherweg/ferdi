@@ -69,6 +69,9 @@ const ferdi_fn = () => {
 
   // CLI Interface with yargs
   const ferdi = yargs
+    .parserConfiguration({
+      'populate--': true,
+    })
     .command({
       command: ['new', '*'],
       description: 'Create a new Module',

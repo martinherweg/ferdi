@@ -1,10 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ferdi --help : ferdi --help stdout 1`] = `
-"Commands:
-  new   Create a new Module                                            [default]
-  init  Copy the Config File to current Folder
-  copy  Copy Example Templates to your Project
+"index.js
+
+Create a new Module
+
+Commands:
+  index.js new   Create a new Module                                   [default]
+  index.js init  Copy the Config File to current Folder
+  index.js copy  Copy Example Templates to your Project
 
 File Options
   --template    ferdi creates a template
@@ -23,6 +27,5 @@ Options:
   --flat     Create component Files in the Folder itself and not in a component
              named subfolder
   --help     Show help                                                 [boolean]
-
 "
 `;
