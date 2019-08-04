@@ -10,9 +10,6 @@
   "bin": {
     "ferdi": "index.js"
   },
-  "yargs": {
-    "populate--": true
-  },
   "scripts": {
     "test": "jest --env node"
   },
@@ -29,9 +26,9 @@
     "inquirer": "^3.3.0",
     "lodash": "^4.17.4",
     "mem-fs": "^1.1.3",
-    "mem-fs-editor": "^5.1.0",
+    "mem-fs-editor": "^6.0.0",
     "node-dir": "^0.1.17",
-    "yargs": "^9.0.1"
+    "yargs": "^13.3.0"
   },
   "devDependencies": {
     "eslint": "^4.15.0",
