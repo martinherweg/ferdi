@@ -5,3 +5,17 @@ src/moduleCreation.js
 .history/
 .DS_Store
 launch.json
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/$CACHE_FILE$
+/.idea/$PRODUCT_WORKSPACE_FILE$
+/.idea/.gitignore
+/.idea/blade.xml
+/.idea/composerJson.xml
+/.idea/dictionaries
+/.idea/encodings.xml
+/.idea/ferdi.iml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/php.xml
+/.idea/vcs.xml
