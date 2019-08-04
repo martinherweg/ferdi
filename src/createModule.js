@@ -102,6 +102,7 @@ const createModule = ({
     const moduleData = config.fileHeader || {};
     moduleData.moduleName = path.basename(name);
     moduleData.file = filename;
+    moduleData.modulePath = name;
 
     if (pathOptions) {
       moduleData.pathOptions = pathOptions;
