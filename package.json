@@ -11,10 +11,7 @@
     "ferdi": "index.js"
   },
   "scripts": {
-    "test": "jest --env node"
-  },
-  "jest": {
-    "testEnvironment": "node"
+    "test": "jest"
   },
   "repository": "https://github.com/martinherweg/ferdi",
   "dependencies": {
