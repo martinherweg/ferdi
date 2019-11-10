@@ -1,10 +1,13 @@
-const spawn = require('spawn-command');
-const path = require('path');
-const fs = require('fs-extra');
-const assert = require('yeoman-assert');
-const config = require('../src/.ferdirc');
+jest.mock('inquirer');
+const spawn             = require('spawn-command');
+const path              = require('path');
+const fs                = require('fs-extra');
+const assert            = require('yeoman-assert');
+const config            = require('../src/.ferdirc');
+const { expectPrompts, prompt } = require('inquirer');
 
 const CLI_PATH = require.resolve('../index');
+
 
 afterEach(() => {
   fs.remove(path.resolve(__dirname, '../src/', config.paths.modulePath));
@@ -27,6 +30,27 @@ describe('Create new Module', () => {
     return runCli(`${moduleName} -m`, '../src').then(stdout => {
       const basePath = `./src/${config.paths.modulePath + config.paths.pathOptions.modules}`;
       assert.file([`${basePath + moduleName}/_${moduleName}-style.scss`, `${basePath + moduleName}/${moduleName}-script.js`, `${basePath + moduleName}/${moduleName}-template.html`]);
+    });
+  });
+
+  test('it should ask if file should be overwritten', async () => {
+    const basePath = `./__tests__/overwrite/${config.paths.modulePath + config.paths.pathOptions.modules}`;
+    const moduleName = 'button';
+    const files = [`${basePath + moduleName}/_${moduleName}-style.scss`, `${basePath + moduleName}/${moduleName}-script.js`, `${basePath + moduleName}/${moduleName}-template.html`];
+    files.map(file => fs.ensureFileSync(file));
+
+    return runCli(`${moduleName} -m`, '../__tests__/overwrite').then(async stdout => {
+      console.log(expectPrompts([]));
+      //
+      const overwriteFile = await prompt([
+        { name: 'overwriteFile', type: 'confirm', message: 'You really want to overwrite the file?' }
+      ]);
+
+      console.log(overwriteFile);
+
+      expect(overwriteFile).toEqual({
+        overwriteFile: true,
+      })
     });
   });
 
@@ -195,10 +219,12 @@ function runCli(args = '', cwd = process.cwd()) {
     });
 
     child.stdout.on('data', data => {
+      console.log(data.toString());
       stdout += data.toString();
     });
 
     child.stderr.on('data', data => {
+      console.log(data.toString());
       stderr += data.toString();
     });
 

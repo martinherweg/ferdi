@@ -11,20 +11,21 @@
 |---------------------------------------------------
 */
 
-const glob = require('glob');
-const chalk = require('chalk');
+const glob     = require('glob');
+const chalk    = require('chalk');
 const {
   diff,
   addedDiff,
   deletedDiff,
   detailedDiff,
   updatedDiff
-} = require('deep-object-diff');
-const path = require('path');
-const memFs = require('mem-fs');
-const editor = require('mem-fs-editor');
-const findUp = require('find-up');
-const _ = require('lodash');
+}              = require('deep-object-diff');
+const path     = require('path');
+const memFs    = require('mem-fs');
+const editor   = require('mem-fs-editor');
+const findUp   = require('find-up');
+const _        = require('lodash');
+const inquirer = require('inquirer');
 
 const store = memFs.create();
 const fs = editor.create(store);
@@ -60,7 +61,7 @@ const createModule = ({
    * @param fileExtension
    * @returns {*}
    */
-  const copyTpl = ({
+  const copyTpl = async ({
     fileExtension
   }) => {
     const templatePath = path.resolve(`${basePath}/${config.paths.templateBase}`);
@@ -115,12 +116,16 @@ const createModule = ({
     // }, null, 2));
 
     try {
-      fs.copyTpl(templateFile[0], `${destinationPath.replace('//', '/')}`, moduleData);
+      if (fs.exists(destinationPath)) {
+        await inquirer.prompt([
+          { name: 'overwriteFile', type: 'confirm', message: 'You really want to overwrite the file?' }
+        ]);
+      }
+      // fs.copyTpl(templateFile[0], `${destinationPath.replace('//', '/')}`, moduleData);
       console.log(chalk `\n{green File ${destinationPath.replace('//', '/')} was created}`);
     } catch (error) {
       console.error(`No Template File found for ${kind}`, `\n${error}`);
     }
-
     return fs.commit(done => done);
   };
 
