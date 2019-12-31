@@ -1,6 +1,6 @@
 {
   "name": "ferdi",
-  "version": "0.0.21",
+  "version": "0.0.17",
   "license": "MIT",
   "preferGlobal": true,
   "engines": {
@@ -36,7 +36,9 @@
     "eslint-plugin-node": "^5.2.1",
     "jest": "^24.8.0",
     "jest-cli": "^24.8.0",
+    "prettier": "^1.18.2",
     "spawn-command": "^0.0.2-1",
+    "uuid": "^3.3.2",
     "yeoman-assert": "^3.1.0"
   }
 }

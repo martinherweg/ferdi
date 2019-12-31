@@ -1,13 +1,14 @@
-jest.mock('inquirer');
-const spawn             = require('spawn-command');
-const path              = require('path');
-const fs                = require('fs-extra');
-const assert            = require('yeoman-assert');
-const config            = require('../src/.ferdirc');
-const { expectPrompts, prompt } = require('inquirer');
+const spawn = require('spawn-command');
+const path = require('path');
+const exec = require('child_process').exec;
+const uuid = require('uuid');
+const fs = require('fs-extra');
+const assert = require('yeoman-assert');
+const config = require('../src/.ferdirc');
 
 const CLI_PATH = require.resolve('../index');
 
+const SANDBOX = '__tests__/sandbox';
 
 afterEach(() => {
   fs.remove(path.resolve(__dirname, '../src/', config.paths.modulePath));
@@ -200,6 +201,51 @@ describe('create multiple modules with the same options', () => {
   });
 });
 
+describe('new tests', () => {
+  let sandboxDir = '';
+  beforeAll(() => {
+    sandboxDir = path.resolve(tmp());
+    const configFile = path.resolve(__dirname, '..', 'src', '.ferdirc.js');
+    const templatesFolder = path.resolve(__dirname, '..', 'src', 'templates');
+
+    fs.copySync(configFile, `${sandboxDir  }/.ferdirc.js`);
+    fs.copySync(templatesFolder, `${sandboxDir  }/templates`);
+  });
+
+  afterAll(() => {
+    fs.removeSync(sandboxDir);
+  });
+
+  it('should execute something', async () => {
+    const sandbox = sandboxDir;
+
+    const result = await runCliNew(['button'], sandbox);
+
+    const basePath = `${sandbox}/${config.paths.modulePath}`;
+
+    assert.file([`${basePath}button/_button-style.scss`, `${basePath}button/button-script.js`, `${basePath}button/button-template.html`]);
+  });
+});
+
+function runCliNew(args, cwd) {
+  const resolvedCwd = path.resolve(cwd);
+  return new Promise(resolve => {
+    exec(
+      `node ${path.resolve('./index.js')} ${args.join(' ')}`,{
+        cwd: resolvedCwd,
+      },
+      (error, stdout, stderr) => {
+        resolve({
+          code: error && error.code ? error.code : 0,
+          error,
+          stdout,
+          stderr
+        });
+      }
+    );
+  });
+}
+
 function runCli(args = '', cwd = process.cwd()) {
   const isRelative = cwd[0] !== '/';
 
@@ -219,12 +265,10 @@ function runCli(args = '', cwd = process.cwd()) {
     });
 
     child.stdout.on('data', data => {
-      console.log(data.toString());
       stdout += data.toString();
     });
 
     child.stderr.on('data', data => {
-      console.log(data.toString());
       stderr += data.toString();
     });
 
@@ -236,4 +280,13 @@ function runCli(args = '', cwd = process.cwd()) {
       }
     });
   });
+}
+
+function tmp(ext) {
+  ext = ext || '';
+  const newPath = path.join(SANDBOX, uuid(), ext);
+  if (!fs.existsSync(newPath)) {
+    fs.mkdirSync(newPath);
+  }
+  return newPath;
 }

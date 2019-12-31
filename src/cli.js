@@ -11,32 +11,40 @@
 |---------------------------------------------------
 */
 
-const util = require('util');
-const path = require('path');
-const fs = require('fs-extra');
-const yargs = require('yargs');
-const chalk = require('chalk');
-const findUp = require('find-up');
-const merge = require('deepmerge');
-const _ = require('lodash');
+const util = require("util");
+const path = require("path");
+const fs = require("fs-extra");
+const yargs = require("yargs");
+const chalk = require("chalk");
+const findUp = require("find-up");
+const merge = require("deepmerge");
+const _ = require("lodash");
 
-const createModule = require('./createModule');
+const moduleCreation = require("./createModule");
 
 // load the default config
-const defaultConfig = require('./.ferdirc');
+const defaultConfig = require("./.ferdirc");
 
 // get root of project
-const ferdi_ROOT = path.resolve(__filename, '../', '../');
+const ferdi_ROOT = path.resolve(__filename, "../", "../");
 // set config filename and location
-const CONFIG_FILE_NAME = './src/.ferdirc.js';
+const CONFIG_FILE_NAME = "./src/.ferdirc.js";
 // check if the config file exists and load the path
-const ferdi_CONFIG_FILE = fs.existsSync(path.resolve(ferdi_ROOT, CONFIG_FILE_NAME)) ? path.resolve(ferdi_ROOT, CONFIG_FILE_NAME) : '';
+const ferdi_CONFIG_FILE = fs.existsSync(
+  path.resolve(ferdi_ROOT, CONFIG_FILE_NAME)
+)
+  ? path.resolve(ferdi_ROOT, CONFIG_FILE_NAME)
+  : "";
 
-const TEMPLATE_FOLDER_NAME = './src/templates';
-const TEMPLATE_FOLDER = fs.existsSync(path.resolve(ferdi_ROOT, TEMPLATE_FOLDER_NAME)) ? path.resolve(ferdi_ROOT, TEMPLATE_FOLDER_NAME) : '';
+const TEMPLATE_FOLDER_NAME = "./src/templates";
+const TEMPLATE_FOLDER = fs.existsSync(
+  path.resolve(ferdi_ROOT, TEMPLATE_FOLDER_NAME)
+)
+  ? path.resolve(ferdi_ROOT, TEMPLATE_FOLDER_NAME)
+  : "";
 
 // check for a user Config going up from where the command was used and get it's path
-const userConfigPath = findUp.sync(['.ferdirc.js', '.ferdirc']) || '';
+const userConfigPath = findUp.sync([".ferdirc.js", ".ferdirc"]) || "";
 let userConfig;
 if (userConfigPath) {
   userConfig = require(userConfigPath);
@@ -56,7 +64,9 @@ const ferdi_fn = () => {
   Object.keys(paths.pathOptions).forEach(key => {
     pathOptions[key] = {};
     pathOptions[key].alias = key.charAt(0);
-    pathOptions[key].description = `ferdi creates File at ${paths.modulePath}${key}/`;
+    pathOptions[
+      key
+    ].description = `ferdi creates File at ${paths.modulePath}${key}/`;
     pathOptions[key].group = chalk`{bgCyan Path Options}`;
   });
 
@@ -70,33 +80,42 @@ const ferdi_fn = () => {
   // CLI Interface with yargs
   const ferdi = yargs
     .parserConfiguration({
-      'populate--': true,
+      "populate--": true
     })
     .command({
-      command: ['new', '*'],
-      description: 'Create a new Module',
+      command: ["new", "*"],
+      description: "Create a new Module",
       handler: argv => {
-        if (!config) console.error('Please use `ferdi init` to copy the config file to your project ');
+        if (!config)
+          console.error(
+            "Please use `ferdi init` to copy the config file to your project "
+          );
         // use createModule function to create the new module.
-        createModule({
+        moduleCreation({
           options: argv,
           config
         });
       }
     })
     .command({
-      command: 'init',
-      description: 'Copy the Config File to current Folder',
+      command: "init",
+      description: "Copy the Config File to current Folder",
       handler() {
         // copy Config File from Module to Project root
         try {
-          fs.copySync(ferdi_CONFIG_FILE, `${process.cwd()}/${path.basename(ferdi_CONFIG_FILE)}`, {
-            overwrite: false,
-            errorOnExist: true
-          });
+          fs.copySync(
+            ferdi_CONFIG_FILE,
+            `${process.cwd()}/${path.basename(ferdi_CONFIG_FILE)}`,
+            {
+              overwrite: false,
+              errorOnExist: true
+            }
+          );
           console.log(
-            chalk`{green ferdi config File was copied to ${process.cwd()}/${path.basename(ferdi_CONFIG_FILE)}}`,
-            '\nPlease add File templates to your template folder or use `ferdi copy` to copy some example Template Files to your Project'
+            chalk`{green ferdi config File was copied to ${process.cwd()}/${path.basename(
+              ferdi_CONFIG_FILE
+            )}}`,
+            "\nPlease add File templates to your template folder or use `ferdi copy` to copy some example Template Files to your Project"
           );
         } catch (error) {
           console.error(error);
@@ -104,15 +123,23 @@ const ferdi_fn = () => {
       }
     })
     .command({
-      command: 'copy',
-      description: 'Copy Example Templates to your Project',
+      command: "copy",
+      description: "Copy Example Templates to your Project",
       handler() {
         try {
-          fs.copySync(TEMPLATE_FOLDER, `${process.cwd()}/${config.paths.templateBase}`, {
-            overwrite: false,
-            errorOnExist: true
-          });
-          console.log(chalk`{green ferdi Templates were copied to ${process.cwd()}/${config.paths.templateBase}}`);
+          fs.copySync(
+            TEMPLATE_FOLDER,
+            `${process.cwd()}/${config.paths.templateBase}`,
+            {
+              overwrite: false,
+              errorOnExist: true
+            }
+          );
+          console.log(
+            chalk`{green ferdi Templates were copied to ${process.cwd()}/${
+              config.paths.templateBase
+            }}`
+          );
         } catch (error) {
           console.error(error);
         }
@@ -120,8 +147,9 @@ const ferdi_fn = () => {
     })
     .options(fileOptions)
     .options(pathOptions)
-    .option('flat', {
-      describe: 'Create component Files in the Folder itself and not in a component named subfolder'
+    .option("flat", {
+      describe:
+        "Create component Files in the Folder itself and not in a component named subfolder"
     })
     .help().argv;
 

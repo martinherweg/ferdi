@@ -13,6 +13,6 @@
 |---------------------------------------------------
 */
 
-const ferdi = require('./src/cli');
+const ferdi = require("./src/cli");
 
 ferdi();

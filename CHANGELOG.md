@@ -2,7 +2,7 @@
 
 ## Ferdi v 0.0.18 - 2018-08-12
 
-* Added functionality to add multiple Files see [#14];
+- Added functionality to add multiple Files see [#14];
 
 ## Ferdi v 0.0.17 - 2018-06.19
 
