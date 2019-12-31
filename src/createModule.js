@@ -11,20 +11,20 @@
 |---------------------------------------------------
 */
 
-const glob = require("glob");
-const chalk = require("chalk");
+const glob = require('glob');
+const chalk = require('chalk');
 const {
   diff,
   addedDiff,
   deletedDiff,
   detailedDiff,
   updatedDiff
-} = require("deep-object-diff");
-const path = require("path");
-const memFs = require("mem-fs");
-const editor = require("mem-fs-editor");
-const findUp = require("find-up");
-const _ = require("lodash");
+} = require('deep-object-diff');
+const path = require('path');
+const memFs = require('mem-fs');
+const editor = require('mem-fs-editor');
+const findUp = require('find-up');
+const _ = require('lodash');
 
 const store = memFs.create();
 const fs = editor.create(store);
@@ -35,23 +35,23 @@ const fs = editor.create(store);
  * @param config
  */
 const createModule = ({
-  name = "module",
+  name = 'module',
   kind,
   extension,
   config,
   pathOptions = null,
   flat = false
 }) => {
-  let basePath = findUp.sync([".ferdirc.js", ".ferdirc"]);
-
+  let basePath = findUp.sync(['.ferdirc.js', '.ferdirc']);
   if (!basePath) {
     console.error(
-      "Please create a config file named .ferdirc.js or .ferdirc in your project root"
+      'Please create a config file named .ferdirc.js or .ferdirc in your project root',
     );
     process.exit();
   }
 
   basePath = path.dirname(basePath);
+
   const { files } = config;
 
   // function to copy a template file to a defined directory
@@ -67,7 +67,7 @@ const createModule = ({
 
     let globRegex = `?(*${kind}-*)`;
 
-    if (kind === "template") {
+    if (kind === 'template') {
       globRegex = `?(${kind}-*)`;
     }
 
@@ -81,26 +81,27 @@ const createModule = ({
     let destinationPath = config.paths.modulePath;
     if (pathOptions) destinationPath += pathOptions.path;
 
-    const splitName = flat ? name.split("/") : name;
-    let fileName = "";
+    const splitName = flat ? name.split('/') : name;
+
+    let fileName = ''
 
     if (flat) {
       fileName = splitName.pop();
     }
 
-    destinationPath = !flat
-      ? path.join(destinationPath, name)
-      : path.join(destinationPath, splitName.join("/"));
+    destinationPath = !flat ?
+      path.join(destinationPath, name) :
+      path.join(destinationPath, splitName.join('/'));
     // console.log(files[kind]);
-    let filename = files[kind].name
-      ? files[kind].name
-      : `${path.basename(name)}${
-          files[kind].postfix ? `${files[kind].postfix}` : ""
-        }`;
+    let filename = files[kind].name ?
+      files[kind].name :
+      `${path.basename(name)}${
+        files[kind].postfix ? `${files[kind].postfix}` : ''
+      }`;
 
     filename = `${filename}.${fileExtension}`;
     if (fileExtension.match(/scss/g) && !files[kind].name) {
-      filename = "".concat("_", filename);
+      filename = ''.concat('_', filename);
     }
 
     destinationPath = `${basePath}/${destinationPath}/${filename}`;
@@ -123,11 +124,11 @@ const createModule = ({
     try {
       fs.copyTpl(
         templateFile[0],
-        `${destinationPath.replace("//", "/")}`,
+        `${destinationPath.replace('//', '/')}`,
         moduleData
       );
       console.log(
-        chalk`\n{green File ${destinationPath.replace("//", "/")} was created}`
+        chalk`\n{green File ${destinationPath.replace('//', '/')} was created}`
       );
     } catch (error) {
       console.error(`No Template File found for ${kind}`, `\n${error}`);
@@ -183,10 +184,10 @@ const moduleCreation = ({ options, config }) => {
           path: files[file].path
         };
       } else {
-        Object.keys(pathOptions).forEach(path => {
+        Object.keys(pathOptions).forEach(pathKey => {
           if (options[path]) {
             destinationPathOption = {
-              key: path,
+              key: pathKey,
               path: pathOptions[path]
             };
           }
@@ -195,7 +196,7 @@ const moduleCreation = ({ options, config }) => {
 
       const module = files[file];
 
-      if (typeof options._[0] !== "string") {
+      if (typeof options._[0] !== 'string') {
         console.error(`OPTIONS: ${JSON.stringify(trueOptions, null, 2)}`);
         console.error(
           chalk`{red First argument must always be the name of the module}`
