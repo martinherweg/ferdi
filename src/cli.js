@@ -20,7 +20,7 @@ const findUp = require("find-up");
 const merge = require("deepmerge");
 const _ = require("lodash");
 
-const createModule = require("./createModule");
+const moduleCreation = require("./createModule");
 
 // load the default config
 const defaultConfig = require("./.ferdirc");
@@ -91,7 +91,7 @@ const ferdi_fn = () => {
             "Please use `ferdi init` to copy the config file to your project "
           );
         // use createModule function to create the new module.
-        createModule({
+        moduleCreation({
           options: argv,
           config
         });
