@@ -13,26 +13,23 @@
 
 const glob = require('glob');
 const chalk = require('chalk');
-const {
-  diff,
-  addedDiff,
-  deletedDiff,
-  detailedDiff,
-  updatedDiff
-} = require('deep-object-diff');
 const path = require('path');
 const memFs = require('mem-fs');
 const editor = require('mem-fs-editor');
 const findUp = require('find-up');
-const _ = require('lodash');
 
 const store = memFs.create();
 const fs = editor.create(store);
 
 /**
  *
+ * @param name
+ * @param kind
  * @param extension
  * @param config
+ *
+ * @param pathOptions
+ * @param flat
  */
 const createModule = ({
   name = 'module',
@@ -60,6 +57,7 @@ const createModule = ({
    * @param fileExtension
    * @returns {*}
    */
+  // eslint-disable-next-line complexity
   const copyTpl = ({ fileExtension }) => {
     const templatePath = path.resolve(
       `${basePath}/${config.paths.templateBase}`
@@ -83,17 +81,19 @@ const createModule = ({
 
     const splitName = flat ? name.split('/') : name;
 
-    let fileName = ''
+    // eslint-disable-next-line
+    let filename;
 
     if (flat) {
-      fileName = splitName.pop();
+      // eslint-disable-next-line
+      filename = splitName.pop();
     }
 
     destinationPath = !flat ?
       path.join(destinationPath, name) :
       path.join(destinationPath, splitName.join('/'));
     // console.log(files[kind]);
-    let filename = files[kind].name ?
+    filename = files[kind].name ?
       files[kind].name :
       `${path.basename(name)}${
         files[kind].postfix ? `${files[kind].postfix}` : ''
@@ -137,10 +137,11 @@ const createModule = ({
     return fs.commit(done => done);
   };
 
+  // eslint-disable-next-line valid-typeof
   if (typeof extension === Array) {
-    extension.forEach(extension =>
+    extension.forEach(extensionType =>
       copyTpl({
-        fileExtension: extension
+        fileExtension: extensionType
       })
     );
   } else {
@@ -174,9 +175,9 @@ const moduleCreation = ({ options, config }) => {
     trueOptions = { ...options, ...defaults };
   }
 
+  // eslint-disable-next-line consistent-return
   Object.keys(files).forEach(file => {
     let destinationPathOption;
-
     if (trueOptions[file]) {
       if (files[file].path) {
         destinationPathOption = {
@@ -185,15 +186,14 @@ const moduleCreation = ({ options, config }) => {
         };
       } else {
         Object.keys(pathOptions).forEach(pathKey => {
-          if (options[path]) {
+          if (options[pathKey]) {
             destinationPathOption = {
               key: pathKey,
-              path: pathOptions[path]
+              path: pathOptions[pathKey]
             };
           }
         });
       }
-
       const module = files[file];
 
       if (typeof options._[0] !== 'string') {
