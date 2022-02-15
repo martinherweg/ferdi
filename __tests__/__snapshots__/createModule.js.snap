@@ -23,9 +23,9 @@ Path Options
   -m, --modules  ferdi creates File at src/modules/
 
 Optionen:
-      --version  Version anzeigen                                      [boolean]
       --flat     Create component Files in the Folder itself and not in a compon
                  ent named subfolder
+      --version  Version anzeigen                                      [boolean]
       --help     Hilfe anzeigen                                        [boolean]
 "
 `;
