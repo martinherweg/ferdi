@@ -5,8 +5,8 @@ exports[`ferdi --help : ferdi --help stdout 1`] = `
 
 Create a new Module
 
-Commands:
-  index.js new   Create a new Module                                   [default]
+Kommandos:
+  index.js new   Create a new Module                                  [Standard]
   index.js init  Copy the Config File to current Folder
   index.js copy  Copy Example Templates to your Project
 
@@ -22,10 +22,10 @@ Path Options
   -a, --atomic   ferdi creates File at src/atomic/
   -m, --modules  ferdi creates File at src/modules/
 
-Options:
-      --version  Show version number                                   [boolean]
+Optionen:
+      --version  Version anzeigen                                      [boolean]
       --flat     Create component Files in the Folder itself and not in a compon
                  ent named subfolder
-      --help     Show help                                             [boolean]
+      --help     Hilfe anzeigen                                        [boolean]
 "
 `;
