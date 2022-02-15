@@ -78,7 +78,6 @@ const ferdi_fn = () => {
       command: ['new', '*'],
       description: 'Create a new Module',
       handler: argv => {
-        console.log(argv);
         if (!config) console.error('Please use `ferdi init` to copy the config file to your project ');
         // use createModule function to create the new module.
         createModule({
