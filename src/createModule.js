@@ -11,23 +11,20 @@
 |---------------------------------------------------
 */
 
-const glob = require('glob');
-const chalk = require('chalk');
-const {
-  diff,
-  addedDiff,
-  deletedDiff,
-  detailedDiff,
-  updatedDiff
-} = require('deep-object-diff');
-const path = require('path');
-const memFs = require('mem-fs');
-const editor = require('mem-fs-editor');
-const findUp = require('find-up');
-const _ = require('lodash');
-
+import glob from 'glob';
+import chalk from 'chalk';
+import {addedDiff, deletedDiff, detailedDiff, diff, updatedDiff} from 'deep-object-diff';
+import path from 'path';
+import memFs from 'mem-fs';
+import editor from 'mem-fs-editor';
+import { findUpSync } from 'find-up';
+import {fileURLToPath} from 'node:url';
+import _ from 'lodash';
 const store = memFs.create();
 const fs = editor.create(store);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  *
@@ -42,7 +39,7 @@ const createModule = ({
   pathOptions = null,
   flat = false
 }) => {
-  let basePath = findUp.sync(['.ferdirc.js', '.ferdirc']);
+  let basePath = findUpSync(['.ferdirc.js', '.ferdirc']);
 
   if (!basePath) {
     console.error('Please create a config file named .ferdirc.js or .ferdirc in your project root');
@@ -50,9 +47,7 @@ const createModule = ({
   }
 
   basePath = path.dirname(basePath);
-  const {
-    files
-  } = config;
+  const files = config.default?.files ?? config.files;
 
   // function to copy a template file to a defined directory
   /**
@@ -63,7 +58,8 @@ const createModule = ({
   const copyTpl = ({
     fileExtension
   }) => {
-    const templatePath = path.resolve(`${basePath}/${config.paths.templateBase}`);
+    const templatePathBase = config.default?.paths?.templateBase ?? config.paths.templateBase
+    const templatePath = path.resolve(`${basePath}/${templatePathBase}`);
 
     let globRegex = `?(*${kind}-*)`;
 
@@ -78,7 +74,7 @@ const createModule = ({
       realpath: true
     });
 
-    let destinationPath = config.paths.modulePath;
+    let destinationPath = config.default?.paths.modulePath ?? config.paths.modulePath;
     if (pathOptions) destinationPath += pathOptions.path;
 
     const splitName = flat ? name.split('/') : name;
@@ -99,7 +95,7 @@ const createModule = ({
 
     destinationPath = `${basePath}/${destinationPath}/${filename}`;
     // get module data to write files
-    const moduleData = config.fileHeader || {};
+    const moduleData = config.default?.fileHeader ?? config.fileHeader ?? {};
     moduleData.moduleName = path.basename(name);
     moduleData.file = filename;
     moduleData.modulePath = name;
@@ -145,11 +141,9 @@ const moduleCreation = ({
   options,
   config
 }) => {
-  const {
-    files,
-    paths,
-    defaults
-  } = config;
+  const files = config.default?.files ?? config.files;
+  const paths = config.default?.paths ?? config.paths;
+  const defaults = config.default?.defaults ?? config.defaults;
   const {
     pathOptions
   } = paths;
@@ -187,12 +181,12 @@ const moduleCreation = ({
       }
 
       const module = files[file];
-
       if (typeof options._[0] !== 'string') {
         console.error(`OPTIONS: ${JSON.stringify(trueOptions, null, 2)}`);
         console.error(chalk `{red First argument must always be the name of the module}`);
         return process.exit();
       }
+
 
       trueOptions._.forEach(thisModule => {
         createModule({
@@ -208,4 +202,4 @@ const moduleCreation = ({
   });
 };
 
-module.exports = moduleCreation;
+export default moduleCreation;

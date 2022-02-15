@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   defaults: {
     template: true,
     css: true,

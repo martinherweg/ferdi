@@ -11,20 +11,20 @@
 |---------------------------------------------------
 */
 
-const util = require('util');
-const path = require('path');
-const fs = require('fs-extra');
-const yargs = require('yargs');
-const chalk = require('chalk');
-const findUp = require('find-up');
-const merge = require('deepmerge');
-const _ = require('lodash');
-
-const createModule = require('./createModule');
-
+import util from 'util';
+import path from 'path';
+import fs from 'fs-extra';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+import chalk from 'chalk';
+import { findUpSync } from 'find-up';
+import merge from 'deepmerge';
+import _ from 'lodash';
+import {fileURLToPath} from 'node:url';
+import createModule from './createModule.js';
 // load the default config
-const defaultConfig = require('./.ferdirc');
-
+import defaultConfig from './.ferdirc.js';
+const __filename = fileURLToPath(import.meta.url);
 // get root of project
 const ferdi_ROOT = path.resolve(__filename, '../', '../');
 // set config filename and location
@@ -36,10 +36,10 @@ const TEMPLATE_FOLDER_NAME = './src/templates';
 const TEMPLATE_FOLDER = fs.existsSync(path.resolve(ferdi_ROOT, TEMPLATE_FOLDER_NAME)) ? path.resolve(ferdi_ROOT, TEMPLATE_FOLDER_NAME) : '';
 
 // check for a user Config going up from where the command was used and get it's path
-const userConfigPath = findUp.sync(['.ferdirc.js', '.ferdirc']) || '';
+const userConfigPath = findUpSync(['.ferdirc.js', '.ferdirc']) || '';
 let userConfig;
 if (userConfigPath) {
-  userConfig = require(userConfigPath);
+  userConfig = await import(userConfigPath);
 }
 
 // if a user config is available use it and if not use the default Config
@@ -48,7 +48,9 @@ const config = userConfig !== undefined ? userConfig : defaultConfig;
 // Main CLI Function
 const ferdi_fn = () => {
   // load files and paths from the config
-  const { files, paths, defaults } = config;
+  const files = config.default?.files ?? config.files;
+  const paths = config.default?.paths ?? config.paths;
+  const defaults = config.default?.defaults ?? config.defaults;
 
   // empty object for path object
   // Loop through all Defined path Options in the Config file and save them to empty object.
@@ -68,7 +70,7 @@ const ferdi_fn = () => {
   });
 
   // CLI Interface with yargs
-  const ferdi = yargs
+  const ferdi = yargs(hideBin(process.argv))
     .parserConfiguration({
       'populate--': true,
     })
@@ -76,6 +78,7 @@ const ferdi_fn = () => {
       command: ['new', '*'],
       description: 'Create a new Module',
       handler: argv => {
+        console.log(argv);
         if (!config) console.error('Please use `ferdi init` to copy the config file to your project ');
         // use createModule function to create the new module.
         createModule({
@@ -128,4 +131,4 @@ const ferdi_fn = () => {
   return ferdi;
 };
 
-module.exports = ferdi_fn;
+export default ferdi_fn;

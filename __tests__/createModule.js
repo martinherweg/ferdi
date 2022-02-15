@@ -1,11 +1,16 @@
-const spawn = require('spawn-command');
-const path = require('path');
-const fs = require('fs-extra');
+import spawn from 'spawn-command';
+import path from 'path';
+import fs from 'fs-extra';
+import config from '../src/.ferdirc.js';
+import {jest} from '@jest/globals'
+import { createRequire } from "module";
+import {fileURLToPath} from 'node:url';
+const require = createRequire(import.meta.url);
 const assert = require('yeoman-assert');
-const config = require('../src/.ferdirc');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const CLI_PATH = require.resolve('../index');
-
+const { pathname: CLI_PATH } = new URL('../index.js', import.meta.url);
 afterEach(() => {
   fs.remove(path.resolve(__dirname, '../src/', config.paths.modulePath));
 });
@@ -178,7 +183,6 @@ describe('create multiple modules with the same options', () => {
 
 function runCli(args = '', cwd = process.cwd()) {
   const isRelative = cwd[0] !== '/';
-
   if (isRelative) {
     cwd = path.resolve(__dirname, cwd);
   }
@@ -190,6 +194,7 @@ function runCli(args = '', cwd = process.cwd()) {
     const child = spawn(command, {
       cwd
     });
+
     child.on('error', error => {
       reject(error);
     });
