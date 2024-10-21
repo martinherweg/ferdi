@@ -5,6 +5,7 @@ src/moduleCreation.js
 .history/
 .DS_Store
 launch.json
+output
 /.idea/codeStyles/codeStyleConfig.xml
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/$CACHE_FILE$
