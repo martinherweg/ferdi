@@ -1,4 +1,4 @@
-import {cosmiconfig} from "cosmiconfig";
+import {cosmiconfigSync} from "cosmiconfig";
 import * as tsNode from "ts-node";
 
 tsNode.register({
@@ -25,9 +25,9 @@ export function defineConfig(config: Config): Config {
     return config;
 }
 
-export async function loadConfig(): Promise<Config> {
-    const explorerSync = cosmiconfig("ferdi");
-    const result = await explorerSync.search();
+export function loadConfig(): Config {
+    const explorerSync = cosmiconfigSync("ferdi");
+    const result = explorerSync.search();
 
     if (!result || result.isEmpty) {
         throw new Error('No valid configuration file found');
