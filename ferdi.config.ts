@@ -8,9 +8,23 @@ export default defineConfig({
             postfix: '',
             extension: 'ts',
             description: 'A simple typescript file'
+        },
+        html: {
+            name: 'template',
+            postfix: '',
+            extension: 'twig',
+            description: 'A simple twig file'
+        },
+        svelte: {
+            name: 'svelte',
+            postfix: '',
+            extension: 'svelte',
+            description: 'A simple svelte file'
         }
     },
     defaults: {
-        typescript: true
+        typescript: true,
+        svelte: true,
+        template: false,
     }
 });

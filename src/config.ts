@@ -5,6 +5,12 @@ tsNode.register({
     transpileOnly: true
 })
 
+
+/**
+ * @interface Config
+ * @member defaults - The keys here should be the same as in the files object
+ * @member files - The keys here are translated to options in the cli so every file is also an indicator
+ */
 export interface Config {
     defaults: {
         [key: string]: boolean;
